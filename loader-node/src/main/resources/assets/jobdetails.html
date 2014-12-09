@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/bootstrap-dropdown.js"></script>
+	<script type="text/javascript" src="js/knockout-2.3.0-min.js"></script>
+	<script type="text/javascript" src="js/getJobDetails.js"></script>
+	<script type="text/javascript" src="js/manageRuns.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<style type="text/css">
+		.navbar .header-border {
+			border-bottom:4px solid #E47911;
+		}
+		textarea { resize:none; }
+	</style>
+</head>
+<body>
+	<!--Navigation Bar-->
+	<div id="navigation">
+	</div>
+	<script>
+		$(function(){
+		  $("#navigation").load('header.html');
+		  console.log("I have selected", $("button .disabled"));
+		  $("button .disabled").on('click', function(){
+		  	$(this).prop("disabled",true);
+		  });
+	    })
+	    $('.dropdown-toggle').dropdown();
+	    getJobDetails();
+	</script>
+	<!--Navigation bar ends here-->
+	<!--Adding the breadcrumb-->
+	<ul class="breadcrumb">
+  		<li><a href="index.htm">Home</a> <span class="divider">/</span></li>
+  		<li><a href="jobsearch.html">Job Search</a> <span class="divider">/</span></li>
+  		<li><a href="#">Job Details</a> <span class="divider">/</span></li>
+	</ul>
+	<!--Breadcrumb ends-->
+	<!--Alert msg-->
+	<div id="alertMsg" class="alert" style="display: none">
+	</div>
+	<!--Job Details, table starts-->
+	<div class="row-fluid">
+	  	<div class="span12">
+	  		<form>
+	  		  <fieldset>
+	  		  	<legend>Job Details</legend>
+	  		  	<div class="row-fluid">
+	  			  <div class="span8">
+	  				<label class="span3"><strong>Job</strong></label>
+	  				<div class="span9">
+	  					<p class="span12 pull-right" data-bind="html: jobId"></p>
+	  				</div>
+	  			  </div>
+	  			  <div class="span4">
+		  				<label class="span4"><strong>Started At</strong></label>
+		  				<p class="span8" data-bind="text: startTime"></p>
+		  		  </div>
+	  		    </div>
+	  		    <div class="row-fluid">
+		  			<div class="span8">
+	  				<label class="span3"><strong>Run Name</strong></label>
+						<a class="span9" id="runName" data-bind="attr: {'href': runUrl}, text: runName"></a>
+					</div>
+		  			<div class="span4">
+		  				<label class="span4"><strong>Finished At</strong></label>
+		  				<p class="span8" data-bind="text: endTime"></p>
+		  			</div>
+		  		</div>
+		  		<div class="row-fluid">
+		  			<div class="span6">
+		  				<label class="span4"><strong>Remarks</strong></label>
+		  				<textarea class="span8" rows="3" id="remarks" data-bind="value: remarks"></textarea>
+		  			</div>
+		  		</div>
+	  		  </fieldset>
+			</form>
+		<!--Buttons(stop job, reports)-->
+		<div class="btn-group pull-left">
+  			<button id="stopJob" data-bind="attr: {'class': stopBtnClass}" onClick="stopJob()">Stop</button>
+  			<button id="deleteJob" class="btn"  data-bind="attr: {'class':deleteBtnClass}" onClick="deleteJob()">Delete</button>
+  			<button id="generateLogs" class="btn" data-bind="attr: {'class': logsBtnClass}" onClick="generateLogs()">Logs</button>
+  			<button id="generateGraphs" class="btn" data-bind="attr: {'class': graphsBtnClass}" onClick="generateGraphs()">Reports</button>
+  			<button id="reRun" class="btn" data-bind="attr: {'class': reRunBtnClass}" onClick="reRun()">Rerun</button>
+		</div>
+		<br/>
+		<br/>
+		<!--List of agents used for the job-->
+		<table id="jobAgents" class="table table-bordered">
+			<caption class="text-left"><strong>Agents Used</strong></caption>
+			<thead>
+				<tr>
+					<th>Agent IP</th>
+					<th>Job Status</th>
+					<th>Agent Health</th>
+					<th>#</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: agents">
+				<tr data-bind="attr: {'class': rowClass}">
+					<td data-bind="text: agentIp"></td>
+					<td data-bind="text: job_status"></td>
+					<td data-bind="text: health"></td>
+					<td><button id="stopAgentJob" data-bind="click: killOnAgent ,attr: {'class': stopAgentJobClass}">Stop Job</button></td>
+				</tr>
+			</tbody>
+		</table>
+		<!--Job Details, table ends-->
+		</div>
+	</div> 
+</body>
+<script type="text/javascript">
+	function generateGraphs(){
+ 		var jobId = getQueryParams("jobId");
+  		window.location.href="/graphreports.html?&jobId=" + jobId;
+	}
+
+	function generateLogs(){
+  		var jobId = getQueryParams("jobId");
+  		window.location.href="/logs.html?&jobId=" + jobId + "&agents=" + window["jobAgents"].join();
+	}
+</script>
+</html>
