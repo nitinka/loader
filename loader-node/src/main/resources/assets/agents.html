@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/bootstrap-dropdown.js"></script>
+	<script type="text/javascript" src="js/knockout-2.3.0-min.js"></script>
+	<script type="text/javascript" src="js/getAgentsList.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<style type="text/css">
+		.navbar .header-border {
+			border-bottom:4px solid #E47911;
+		}
+	</style>
+</head>
+<body>
+	<!--Navigation Bar-->
+	<div id="navigation">
+	</div>
+	<script>
+		$(function(){
+		  $("#navigation").load('header.html');
+	    })
+	    getAgents();
+	</script>
+	<!--navigation bar ends-->
+	<!--breadcrumbs make it dynamic-->
+		<ul class="breadcrumb">
+  			<li><a href="index.htm">Home</a> <span class="divider">/</span></li>
+  			<li><a href="#">Agents</a> <span class="divider">/</span></li>
+		</ul>
+	<!--breadcrumbs end-->
+	<!-- <div class="container"> -->
+		<div class="row-fluid">
+			<div class="span12">
+			<table id="agentsList" class="table table-bordered">
+				<thead>
+					<tr>
+					<th>#</th>
+					<th>Agent</th>
+					<th>System Details</th>
+					<th>Status</th>
+					<th>Running Jobs</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: agentRows">
+				<tr data-bind="attr: {'class': rwClass}">
+					<td><input type="checkbox" data-bind="attr: {'id': agent}"/></td>
+					<td data-bind="text: agent"></td>
+					<td data-bind="text: sysDetails"></td>
+					<td data-bind="text: agentStatus"></td>
+					<td data-bind="text: runningJobs"></td>
+				</tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class"span3">
+				<div class="btn-group">
+					<button class="btn" onClick="disableAgents()">Disable</button>
+					<button class="btn" onClick="enableAgents()">Enable</button>
+				</div>
+			</div>
+		</div>
+	<!-- </div> -->
+	<script type="text/javascript">
+		$('.dropdown-toggle').dropdown();
+	</script>
+</body>
+</html>
