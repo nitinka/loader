@@ -4,16 +4,21 @@ import com.flipkart.perf.domain.Load;
 import com.flipkart.perf.server.cache.LibCache;
 import com.flipkart.perf.server.exception.JobException;
 import com.flipkart.perf.server.exception.LibNotDeployedException;
+import com.flipkart.perf.server.util.AsyncHttpClientUtil;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 import com.ning.http.multipart.FilePart;
 import com.ning.http.multipart.StringPart;
+import io.dropwizard.jersey.params.IntParam;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -28,8 +33,10 @@ public class LoaderAgentClient {
     private static final String RESOURCE_INPUT_FILE = "/loader-agent/resourceTypes/inputFiles";
     private static final String RESOURCE_JOB = "/loader-agent/jobs";
     private static final String RESOURCE_JOB_KILL = "/loader-agent/jobs/{jobId}/kill";
+    private static final String RESOURCE_JOB_LOGS = "/loader-agent/jobs/{jobId}/log?lines={lines}&grep={grepExp}";
     private static final String RESOURCE_ADMIN_REGISTRATION_INFO = "/loader-agent/admin/registrationInfo";
     private static ObjectMapper objectMapper = ObjectMapperUtil.instance();
+    private static AsyncHttpClient asyncHttpClient = AsyncHttpClientUtil.instance();
 
     static {
         libCache = LibCache.instance();
@@ -59,13 +66,11 @@ public class LoaderAgentClient {
     }
 
     public Map registrationInfo() throws IOException, ExecutionException, InterruptedException {
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
                 prepareGet("http://" + this.getHost() + ":" + this.getPort() + RESOURCE_ADMIN_REGISTRATION_INFO);
 
         Future<Response> r = b.execute();
         Response response = r.get();
-        asyncHttpClient.close();
         return objectMapper.readValue(response.getResponseBodyAsStream(), Map.class);
     }
 
@@ -73,7 +78,6 @@ public class LoaderAgentClient {
         if(libCache.getPlatformZipPath() == null) {
             throw new LibNotDeployedException("Platform Lib Not Deployed Yet on Loader Server. Deploy them before submitting another job");
         }
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
                 preparePost("http://" + this.getHost() + ":" + this.getPort() + RESOURCE_PLATFORM_LIB).
                 setHeader("Content-Type", MediaType.MULTIPART_FORM_DATA).
@@ -84,13 +88,10 @@ public class LoaderAgentClient {
             r.get();
 
         boolean successfulDeployment = r.get().getStatusCode() == 200;
-        asyncHttpClient.close();
         return successfulDeployment;
     }
 
     public boolean deployUDFLib(String libPath, String classList) throws IOException, ExecutionException, InterruptedException {
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-
         AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
                 preparePost("http://" + this.getHost() + ":" + this.getPort() + RESOURCE_UDF_LIB).
                 setHeader("Content-Type", MediaType.MULTIPART_FORM_DATA).
@@ -100,13 +101,10 @@ public class LoaderAgentClient {
         Future<Response> r = b.execute();
         r.get();
         boolean successfulDeployment = r.get().getStatusCode() == 204;
-        asyncHttpClient.close();
         return successfulDeployment;
     }
 
     public boolean deployInputFile(String resourceName, String inputFilePath) throws IOException, ExecutionException, InterruptedException {
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-
         AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
                 preparePost("http://" + this.getHost() + ":" + this.getPort() + RESOURCE_INPUT_FILE).
                 setHeader("Content-Type", MediaType.MULTIPART_FORM_DATA).
@@ -116,13 +114,11 @@ public class LoaderAgentClient {
         Future<Response> r = b.execute();
         r.get();
         boolean successfulDeployment = r.get().getStatusCode() == 204;
-        asyncHttpClient.close();
         return successfulDeployment;
     }
 
     public void submitJob(String jobId, Load load, String classListStr)
             throws ExecutionException, InterruptedException, JobException, IOException {
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
                 preparePost("http://"+this.getHost()+":" +
                         this.getPort() +
@@ -132,40 +128,41 @@ public class LoaderAgentClient {
                 addBodyPart(new StringPart("jobJson", objectMapper.writeValueAsString(load))).
                 addBodyPart(new StringPart("classList", classListStr));
 
-        try {
-            Future<Response> r = b.execute();
-            r.get();
-            if(r.get().getStatusCode() != 200) {
-                throw new JobException("JobId "+jobId+" submission failed with error response :"+r.get().getResponseBody());
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        finally {
-            asyncHttpClient.close();
+        Future<Response> r = b.execute();
+        r.get();
+        if(r.get().getStatusCode() != 200) {
+            throw new JobException("JobId "+jobId+" submission failed with error response :"+r.get().getResponseBody());
         }
     }
 
-    public void killJob(String jobId) throws ExecutionException, InterruptedException, JobException {
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+    public void killJob(String jobId) throws ExecutionException, InterruptedException, JobException, IOException {
         AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
                 preparePut("http://"+this.getHost()+":" +
                         this.getPort() +
                         RESOURCE_JOB_KILL.
                                 replace("{jobId}", jobId));
-        try {
-            Future<Response> r = b.execute();
-            r.get();
-            if(r.get().getStatusCode() != 200) {
-                throw new JobException("JobId "+jobId+" kill failed with error response :"+r.get().getResponseBody());
-            }
+        Future<Response> r = b.execute();
+        r.get();
+        if(r.get().getStatusCode() != 200) {
+            throw new JobException("JobId "+jobId+" kill failed with error response :"+r.get().getResponseBody());
         }
-        catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    }
+
+    public InputStream getLogs(String jobId, IntParam lines, String grepExp)
+            throws IOException, ExecutionException, InterruptedException, JobException {
+        AsyncHttpClient.BoundRequestBuilder b = asyncHttpClient.
+                prepareGet("http://" + this.getHost() + ":" +
+                        this.getPort() +
+                        RESOURCE_JOB_LOGS
+                                .replace("{jobId}", jobId)
+                                .replace("{lines}", lines.toString())
+                                .replace("{grepExp}", URLEncoder.encode(grepExp,"UTF-8")));
+
+        Future<Response> r = b.execute();
+        Response res = r.get();
+        if(r.get().getStatusCode() != 200) {
+            throw new JobException("Getting logs for job id '"+jobId+"' failed with error response :"+r.get().getResponseBody());
         }
-        finally {
-            asyncHttpClient.close();
-        }
+        return res.getResponseBodyAsStream();
     }
 }

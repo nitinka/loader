@@ -14,6 +14,7 @@ import com.flipkart.perf.server.exception.LibNotDeployedException;
 import com.flipkart.perf.server.util.DeploymentHelper;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import com.flipkart.perf.server.util.ResponseBuilder;
+import io.dropwizard.jersey.params.IntParam;
 import nitinka.jmetrics.JMetric;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,7 +34,7 @@ public  class Job {
     private static final ObjectMapper objectMapper = ObjectMapperUtil.instance();
     private static Logger logger = LoggerFactory.getLogger(Job.class);
 
-   // public abstract void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException;
+    // public abstract void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException;
 
     public static enum JOB_STATUS {
         QUEUED, RUNNING, PAUSED, COMPLETED, KILLED, FAILED_TO_START, ERROR;
@@ -91,13 +92,13 @@ public  class Job {
 
         public AgentJobStatus setHealthStatus(Map<String, Object> healthStatus) {
             if(healthStatus != null) {
-            	synchronized(this.healthStatus) {
-            		this.healthStatus = new ConcurrentHashMap<String, Object>(healthStatus);
-            		if(inStress == null) {
-            			Object inStressObject = this.healthStatus.remove("inStress");
-            			this.inStress = inStressObject == null ? false : Boolean.parseBoolean(inStressObject.toString());
-            		}
-            	}
+                synchronized(this.healthStatus) {
+                    this.healthStatus = new ConcurrentHashMap<String, Object>(healthStatus);
+                    if(inStress == null) {
+                        Object inStressObject = this.healthStatus.remove("inStress");
+                        this.inStress = inStressObject == null ? false : Boolean.parseBoolean(inStressObject.toString());
+                    }
+                }
             }
             return this;
         }
@@ -169,10 +170,10 @@ public  class Job {
     }
 
     public void setMonitoringAgents(Set<String> monitoringAgents) {
-    	synchronized(this.monitoringAgents) {
-    		this.monitoringAgents.clear();
-    		this.monitoringAgents.addAll(monitoringAgents);
-    	}
+        synchronized(this.monitoringAgents) {
+            this.monitoringAgents.clear();
+            this.monitoringAgents.addAll(monitoringAgents);
+        }
     }
 
     public Map<String, AgentJobStatus> getAgentsJobStatus() {
@@ -721,6 +722,17 @@ public  class Job {
         }
         else {
             throw new InvalidJobStateException("Job id "+this.jobId+" not completed yet");
+        }
+    }
+
+    public InputStream getLogsFromAgent(String agent, IntParam lines, String grepExp) {
+        logger.info("Getting Logs '"+jobId+"' in agent '"+agent+"'");
+        try {
+            return new LoaderAgentClient(agent, configuration.getAgentConfig().getAgentPort())
+                    .getLogs(this.jobId, lines, grepExp);
+        } catch (Exception e) {
+            logger.error("Error while get logs for job at agent "+agent, e);
+            throw new WebApplicationException(ResponseBuilder.internalServerError(e));
         }
     }
 }

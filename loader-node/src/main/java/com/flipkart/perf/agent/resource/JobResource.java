@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Receive Requests about jobs
  */
-@Path("/jobs")
+@Path("/loader-agent/jobs")
 
 public class JobResource {
     private JobProcessorThread jobProcessorThread = JobProcessorThread.instance();
@@ -110,7 +110,7 @@ public class JobResource {
                     cmdBuilder.append(" grep "+grepExp + " " + jobLogFile);
                 }
                 else {
-                    cmdBuilder.append(" | grep "+grepExp);
+                    cmdBuilder.append(" | grep "+grepExp.replace(" ","\\ "));
                 }
             }
 

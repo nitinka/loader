@@ -23,7 +23,7 @@ function getJobDetails(){
 				window.viewModel = new jobDetailViewModel(data);
 				window.viewModel.remarks.subscribe(function(remarks){
 				var jobId = getQueryParams("jobId");
-				jobUrl = "loader-server/jobs/" + jobId + "/remarks";
+				jobUrl = "/loader-server/jobs/" + jobId + "/remarks";
 					$.ajax({
 						url: jobUrl,
 						contentType: "application/json", 
@@ -75,7 +75,7 @@ var jobDetailViewModel = function(jobDetails){
 			var ip = data["agentIp"];
 			var jobId = 
 			$.ajax({
-				url: "loader-server/jobs/" + getQueryParams('jobId') + "/agents/" + ip + "/kill",
+				url: "/loader-server/jobs/" + getQueryParams('jobId') + "/agents/" + ip + "/kill",
 				contentType: "application/json", 
 				dataType:"json",
 				type:"PUT",
@@ -157,14 +157,14 @@ var jobDetailViewModel = function(jobDetails){
 	self.agents = ko.observableArray(agentList);
 	self.reRunBtnClass = runBtnClass;
 	self.remarks = ko.observable(jobDetails["remarks"]);
-	self.runUrl = "/updaterun.html?&runName=" + jobDetails["runName"];
+	self.runUrl = "updaterun.html?&runName=" + jobDetails["runName"];
 	console.log("self", self);
 }
 
 function stopJob(){
 	var jobId = getQueryParams("jobId");
 	$.ajax({
-      url: "loader-server/jobs/" + jobId + "/kill",
+      url: "/loader-server/jobs/" + jobId + "/kill",
       contentType: "application/json", 
       dataType:"json",
       type:"PUT",
@@ -195,7 +195,7 @@ function reRun(){
 function deleteJob(){
 	var jobId = getQueryParams("jobId");
 	$.ajax({
-		url: "loader-server/jobs/" + jobId,
+		url: "/loader-server/jobs/" + jobId,
       	contentType: "application/json", 
       	dataType:"json",
       	type:"DELETE",

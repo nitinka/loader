@@ -17,7 +17,7 @@ import java.util.Map;
  * Time: 1:16 PM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/admin")
+@Path("/loader-agent/admin")
 
 public class AdminResource {
     private LoaderAgentConfiguration loaderAgentConfiguration;

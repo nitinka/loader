@@ -121,7 +121,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.flipkart.perf.server.LoaderServerService</mainClass>
+                    <mainClass>com.flipkart.perf.server.LoaderNode</mainClass>
                     <arguments>
                         <argument>${project.basedir}/config/loader-server.yml</argument>
                     </arguments>

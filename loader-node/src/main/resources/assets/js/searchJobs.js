@@ -31,8 +31,8 @@ function searchJobs(){
 
 				}
 				job["shortJobId"] = job["jobId"].substring(0,3) + "..." + job["jobId"].substring(job["jobId"].length-3, job["jobId"].length);
-				job["runUrl"] = "/updaterun.html?&runName=" + job["runName"];
-				job["jobUrl"] = "/jobdetails.html?&jobId=" + job["jobId"];
+				job["runUrl"] = "updaterun.html?&runName=" + job["runName"];
+				job["jobUrl"] = "jobdetails.html?&jobId=" + job["jobId"];
 				if(job["remarks"].length >20){
 					job["lessText"] = job["remarks"].substring(0,20) + " <a class=\"less\"><small>more&gt;&gt;</small></a>";
 					job["moreText"] = job["remarks"] + " <a class=\"more\"><small>&lt;&lt;less</small></a>";

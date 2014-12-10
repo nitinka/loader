@@ -23,7 +23,7 @@ import java.util.Properties;
  * Time: 1:16 PM
  * To change this template use File | Settings | File Templates.
  */
-@Path("/resourceTypes")
+@Path("/loader-agent/resourceTypes")
 
 public class DeployResourcesResource {
     private static Logger logger = LoggerFactory.getLogger(DeployResourcesResource.class);
