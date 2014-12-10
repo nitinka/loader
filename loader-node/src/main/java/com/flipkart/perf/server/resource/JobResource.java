@@ -16,6 +16,7 @@ import com.flipkart.perf.server.util.JobStatsHelper;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import com.flipkart.perf.server.util.ResponseBuilder;
 import io.dropwizard.jersey.params.BooleanParam;
+import io.dropwizard.jersey.params.IntParam;
 import org.codehaus.jackson.JsonParser.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -464,6 +465,15 @@ public class JobResource {
         job.killJobInAgents(Arrays.asList(agentIps.split(",")));
     }
 
+    @GET
+    @Path("/{jobId}/agents/{agentId}/logs")
+    public InputStream getJobLogs(@PathParam("jobId") String jobId,
+                                  @PathParam("agentId") String agentId,
+                                  @QueryParam("lines") @DefaultValue("100") IntParam lines,
+                                  @QueryParam("grep") @DefaultValue("") String grepExp) throws IOException, ExecutionException {
+        Job job = jobExistsOrException(jobId);
+        return job.getLogsFromAgent(agentId, lines, grepExp);
+    }
     /**
      * Returns Monitoring Stats Meta Data. Useful to see what all monitoring stats are being collected as part of performance testing
      * @param jobId

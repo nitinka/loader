@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * Time: 10:10 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ObjectMapperUtil<T> {
+public class ObjectMapperUtil {
     private static ObjectMapper objectMapper;
 
     public static ObjectMapper instance() {

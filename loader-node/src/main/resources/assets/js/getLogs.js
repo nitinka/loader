@@ -19,7 +19,8 @@ function getLogs(){
   if (typeof lines == 'undefined') lines=1000;
   if (typeof textToGrep == 'undefined') textToGrep = "";
   $.ajax({
-    url: "http://" + agent +":8888/loader-agent/jobs/" + jobId + "/log?&lines=" + lines + "&grep=" + textToGrep,
+    url: "/loader-server/jobs/" + jobId + "/agents/" + agent + "/logs?lines=" + lines + "&grep=" + encodeURI(textToGrep),
+//    url: "http://" + agent +":8888/loader-agent/jobs/" + jobId + "/log?&lines=" + lines + "&grep=" + textToGrep,
         type: "GET",
         contentType:"text/plain",
         //dataType:"jsonp",

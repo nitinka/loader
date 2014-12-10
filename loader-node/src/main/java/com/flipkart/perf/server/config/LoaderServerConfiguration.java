@@ -8,11 +8,9 @@ package com.flipkart.perf.server.config;
  * To change this template use File | Settings | File Templates.
  */
 
-import io.dropwizard.Configuration;
 import nitinka.jmetrics.JMetricConfig;
 
-public class LoaderServerConfiguration extends Configuration {
-    private String appName;
+public class LoaderServerConfiguration{
     private ScheduledExecutorConfig scheduledExecutorConfig;
     private ResourceStorageFSConfig resourceStorageFSConfig;
     private AgentConfig agentConfig;
@@ -21,6 +19,7 @@ public class LoaderServerConfiguration extends Configuration {
     private DataFixConfig dataFixConfig;
     private JMetricConfig jMetricConfig;
     private String reportConfigFile;
+
     private static LoaderServerConfiguration instance;
 
     public LoaderServerConfiguration() {
@@ -31,12 +30,12 @@ public class LoaderServerConfiguration extends Configuration {
         return instance;
     }
 
-    public String getAppName() {
-        return appName;
+    public static LoaderServerConfiguration getInstance() {
+        return instance;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public static void setInstance(LoaderServerConfiguration instance) {
+        LoaderServerConfiguration.instance = instance;
     }
 
     public ResourceStorageFSConfig getResourceStorageFSConfig() {
@@ -96,14 +95,6 @@ public class LoaderServerConfiguration extends Configuration {
 
     public void setjMetricConfig(JMetricConfig jMetricConfig) {
         this.jMetricConfig = jMetricConfig;
-    }
-
-    public static LoaderServerConfiguration getInstance() {
-        return instance;
-    }
-
-    public static void setInstance(LoaderServerConfiguration instance) {
-        LoaderServerConfiguration.instance = instance;
     }
 
     public ScheduledExecutorConfig getScheduledExecutorConfig() {

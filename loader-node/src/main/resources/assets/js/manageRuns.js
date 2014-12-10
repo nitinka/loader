@@ -15,7 +15,7 @@ function executeRun(runName){
 		complete: function(xhr, status){
 			if(xhr.status==200){
 				console.log("Job Created, Successfully");
-				window.location.href = "/jobdetails.html?&jobId=" + window.jobId;
+				window.location.href = "jobdetails.html?&jobId=" + window.jobId;
 			} else {
 				console.log("Job creation failed!!");
 				$("#alertMsg").empty();

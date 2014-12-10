@@ -15,8 +15,7 @@ import nitinka.jmetrics.JMetricConfig;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-public class LoaderAgentConfiguration extends Configuration {
-    private String appName;
+public class LoaderAgentConfiguration{
     private ServerInfo serverInfo;
     private ResourceStorageFSConfig resourceStorageFSConfig;
     private JobProcessorConfig jobProcessorConfig;
@@ -32,14 +31,6 @@ public class LoaderAgentConfiguration extends Configuration {
 
     public static LoaderAgentConfiguration instance() {
         return instance;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
     }
 
     public ResourceStorageFSConfig getResourceStorageFSConfig() {

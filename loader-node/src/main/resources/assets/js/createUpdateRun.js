@@ -1236,49 +1236,49 @@ function createTree(){
                 "types": {
                     "run":{
                         "icon":{
-                            "image":"../img/run.png"
+                            "image":"img/run.png"
                         },
                         "valid_children":["loadPart", "monitoringAgents"]
                     },
                     "loadParts":{
                         "icon":{
-                            "image":"../img/loadpart.png"
+                            "image":"img/loadpart.png"
                         },
                         "valid_children":["loadPart"]
                     },
                     "loadPart":{
                         "icon":{
-                            "image":"../img/loadpart.png"
+                            "image":"img/loadpart.png"
                         },
                         "valid_children":["group"]
                     },
                     "group":{
                         "icon":{
-                            "image":"../img/group.png"
+                            "image":"img/group.png"
                         },
                         "valid_children":["function"]
                     },
                     "function":{
                         "icon":{
-                            "image":"../img/function.png"
+                            "image":"img/function.png"
                         },
                         "valid_children":[]
                     },
                     "monitoringAgents":{
                         "icon":{
-                            "image":"../img/monagents.png"
+                            "image":"img/monagents.png"
                         },
                         "valid_children":["metricCollection"]
                     },
                     "metricCollection":{
                         "icon":{
-                            "image":"../img/metriccol.png"
+                            "image":"img/metriccol.png"
                         },
                         "valid_children":[]
                     },
                     "onDemandCol":{
                         "icon":{
-                            "image":"../img/metriccol.png"
+                            "image":"img/metriccol.png"
                         },
                         "valid_children":[]
                     }
@@ -1519,7 +1519,7 @@ function createRun(){
         return;
     }
     $.ajax({
-        url:"loader-server/runs",
+        url:"/loader-server/runs",
         contentType: "application/json", 
         type:"POST",
         processData:false,
@@ -1677,7 +1677,7 @@ function checkValidity(runJson){
 }
 
 function goToUpdate(){
-    window.location = "/updaterun.html?&runName=" + window.viewModel.runName();
+    window.location = "updaterun.html?&runName=" + window.viewModel.runName();
 }
 
 function getQueryParams(sParam) {
@@ -1696,7 +1696,7 @@ function getRunSchema(){
     var runName = getQueryParams("runName");
     var runJson ={}
     $.ajax({
-        url:"loader-server/runs/" + runName,
+        url:"/loader-server/runs/" + runName,
         contentType: "application/json", 
         type:"GET",
         async: false,
@@ -1920,7 +1920,7 @@ function updateRun(){
         return;
     }
     $.ajax({
-        url:"loader-server/runs/" + getQueryParams("runName"),
+        url:"/loader-server/runs/" + getQueryParams("runName"),
         contentType: "application/json", 
         type:"PUT",
         processData:false,

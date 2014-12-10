@@ -114,12 +114,12 @@
 <script type="text/javascript">
 	function generateGraphs(){
  		var jobId = getQueryParams("jobId");
-  		window.location.href="/graphreports.html?&jobId=" + jobId;
+  		window.location.href="graphreports.html?&jobId=" + jobId;
 	}
 
 	function generateLogs(){
   		var jobId = getQueryParams("jobId");
-  		window.location.href="/logs.html?&jobId=" + jobId + "&agents=" + window["jobAgents"].join();
+  		window.location.href="logs.html?&jobId=" + jobId + "&agents=" + window["jobAgents"].join();
 	}
 </script>
 </html>
