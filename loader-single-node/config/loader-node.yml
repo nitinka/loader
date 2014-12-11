@@ -1,6 +1,6 @@
 appName: "Loader Node"
-serverConfigFile: "./loader-node/config/loader-server.json"
-agentConfigFile: "./loader-node/config/loader-agent.json"
+serverConfigFile: "./loader-single-node/config/loader-server.json"
+agentConfigFile: "./loader-single-node/config/loader-agent.json"
 
 server:
   applicationConnectors:

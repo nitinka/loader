@@ -23,8 +23,12 @@ public class AgentHelper {
     private static AgentConfig agentConfig = LoaderServerConfiguration.instance().getAgentConfig();
     public static void refreshAgentInfo(LoaderAgent loaderAgent) throws IOException {
         try {
-            Map<String, Object> agentRegistrationParams = new LoaderAgentClient(loaderAgent.getIp(),
-                    agentConfig.getAgentPort()).registrationInfo();
+            Object portObj = loaderAgent.getAttributes().get("port");
+            int agentPort = agentConfig.getAgentPort();
+            if(portObj != null) {
+                agentPort = Integer.parseInt(portObj.toString());
+            }
+            Map<String, Object> agentRegistrationParams = new LoaderAgentClient(loaderAgent.getIp(), agentPort).registrationInfo();
             loaderAgent.setAttributes(agentRegistrationParams);
             if(loaderAgent.getStatus() != LoaderAgent.LoaderAgentStatus.BUSY)
                 loaderAgent.setFree();

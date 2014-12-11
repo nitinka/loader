@@ -1,6 +1,7 @@
 package com.flipkart.perf.server.util;
 
 import com.flipkart.perf.common.util.FileHelper;
+import com.flipkart.perf.server.cache.AgentsCache;
 import com.flipkart.perf.server.cache.LibCache;
 import com.flipkart.perf.server.client.LoaderAgentClient;
 import com.flipkart.perf.server.config.AgentConfig;
@@ -92,7 +93,7 @@ public class DeploymentHelper {
             logger.info("Deploying Platform Lib on Agent "+agentIP);
             Properties prop = new Properties();
             if(new LoaderAgentClient(agentIP,
-                    agentConfig.getAgentPort()).deployPlatformLibs()) {
+                    AgentsCache.getAgentPort(agentIP)).deployPlatformLibs()) {
                 prop.put("deploymentTime", String.valueOf(System.currentTimeMillis()));
                 FileHelper.createFilePath(platformFile.getAbsolutePath());
                 prop.store(new FileOutputStream(platformFile), "Platform Lib Information");
@@ -129,7 +130,7 @@ public class DeploymentHelper {
                 }
 
                 if(deployLib || force) {
-                    if(new LoaderAgentClient(agentIP,agentConfig.getAgentPort()).
+                    if(new LoaderAgentClient(agentIP,AgentsCache.getAgentPort(agentIP)).
                             deployUDFLib(lib,
                                     libClassListMap.get(lib))) {
                         prop.put(lib, String.valueOf(System.currentTimeMillis()));
@@ -144,7 +145,7 @@ public class DeploymentHelper {
         else {
             FileHelper.createFilePath(classLibDeploymentFile.getAbsolutePath());
             for(String lib : libClassListMap.keySet()) {
-                if(new LoaderAgentClient(agentIP,agentConfig.getAgentPort()).
+                if(new LoaderAgentClient(agentIP,AgentsCache.getAgentPort(agentIP)).
                         deployUDFLib(lib,
                                 libClassListMap.get(lib))) {
                     prop.put(lib, String.valueOf(System.currentTimeMillis()));
@@ -170,7 +171,7 @@ public class DeploymentHelper {
 
             if(toDeploy) {
                 logger.info("Deploying Input File Resource '"+inputFileResourceName+"' on agent "+agentIP);
-                if(new LoaderAgentClient(agentIP,agentConfig.getAgentPort()).
+                if(new LoaderAgentClient(agentIP, AgentsCache.getAgentPort(agentIP)).
                         deployInputFile(inputFileResourceName, inputFileResourcePath)) {
                     agentDeploymentInfoMap.put(agentIP, System.currentTimeMillis());
                     ObjectMapperUtil.instance().writerWithDefaultPrettyPrinter().

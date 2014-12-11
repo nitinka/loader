@@ -1,7 +1,10 @@
 package com.flipkart.perf.agent.daemon;
 
+import com.flipkart.perf.LoaderNodeConfiguration;
 import com.flipkart.perf.agent.client.LoaderServerClient;
 import com.flipkart.perf.common.util.Clock;
+import io.dropwizard.jetty.HttpConnectorFactory;
+import io.dropwizard.server.DefaultServerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,6 +30,8 @@ public class AgentRegistrationThread extends Thread{
     }
 
     public static AgentRegistrationThread initialize(LoaderServerClient serverClient, Map<String,Object> registrationParams) {
+        int  agentPort = ((HttpConnectorFactory) ((DefaultServerFactory) LoaderNodeConfiguration.getInstance().getServerFactory()).getApplicationConnectors().get(0)).getPort();
+        registrationParams.put("port", agentPort);
         if(registrationThread == null) {
         	synchronized (AgentRegistrationThread.class) {
         		registrationThread = new AgentRegistrationThread(serverClient, registrationParams);
