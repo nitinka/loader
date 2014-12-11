@@ -447,6 +447,7 @@ public  class Job {
     private void submitJobToAgent(String agentIp, String jobId, Load load, String classListStr)
             throws InterruptedException, ExecutionException, JobException, IOException {
         logger.info("Agent Ip :" + agentIp);
+        int agentPort = AgentsCache.getAgentPort(agentIp);
         new LoaderAgentClient(agentIp,
                 configuration.getAgentConfig().getAgentPort()).
                 submitJob(jobId, load, classListStr);
@@ -522,7 +523,8 @@ public  class Job {
                         !agentsJobStatusMap.get(agent).getJob_status().equals(JOB_STATUS.COMPLETED)) {
                     logger.info("Killing Job '"+jobId+"' in agent '"+agent+"'");
                     try {
-                        new LoaderAgentClient(agent, configuration.getAgentConfig().getAgentPort()).killJob(this.jobId);
+                        int agentPort = AgentsCache.getAgentPort(agent);
+                        new LoaderAgentClient(agent, agentPort).killJob(this.jobId);
                         this.jobKilledInAgent(agent);
                     } catch (Exception e) {
                         logger.error("Error while killing job at agent "+agent, e);
@@ -728,7 +730,8 @@ public  class Job {
     public InputStream getLogsFromAgent(String agent, IntParam lines, String grepExp) {
         logger.info("Getting Logs '"+jobId+"' in agent '"+agent+"'");
         try {
-            return new LoaderAgentClient(agent, configuration.getAgentConfig().getAgentPort())
+            int agentPort = AgentsCache.getAgentPort(agent);
+            return new LoaderAgentClient(agent, agentPort)
                     .getLogs(this.jobId, lines, grepExp);
         } catch (Exception e) {
             logger.error("Error while get logs for job at agent "+agent, e);

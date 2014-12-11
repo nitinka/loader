@@ -19,7 +19,7 @@
         <module>loader-redis-operations</module>
         <module>loader-activemq-operations</module>
         <module>sample-app</module>
-        <module>loader-node</module>
+        <module>loader-single-node</module>
     </modules>
     <licenses>
         <license>

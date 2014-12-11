@@ -49,6 +49,10 @@ public class AgentsCache {
         return AgentsCache.agentInfoMap.get(ip);
     }
 
+    public static int getAgentPort(String ip) {
+        return Integer.parseInt(AgentsCache.agentInfoMap.get(ip).getAttributes().get("port").toString());
+    }
+
     public static LoaderAgent removeAgent(String ip) {
         return AgentsCache.agentInfoMap.remove(ip);
     }

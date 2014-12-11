@@ -60,11 +60,10 @@ public class LoaderNode extends Application<LoaderNodeConfiguration> {
     public void run(LoaderNodeConfiguration configuration, Environment environment) throws Exception {
         LoaderServerConfiguration serverConfiguration = configuration.getServerConfig();
         LoaderAgentConfiguration agentConfiguration = configuration.getAgentConfig();
+
         /**
          * Enable Cross Origin Scripting
          */
-//        FilterBuilder filterConfig = environment.addFilter(CrossOriginFilter.class, "/*");
-//        filterConfig.setInitParam(CrossOriginFilter.PREFLIGHT_MAX_AGE_PARAM, String.valueOf(60*60*24)); // 1 day - jetty-servlet CrossOriginFilter will convert to Int.
         final FilterRegistration.Dynamic cors = environment.servlets().addFilter("crossOriginRequests", CrossOriginFilter.class);
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
@@ -134,9 +133,6 @@ public class LoaderNode extends Application<LoaderNodeConfiguration> {
 
         JobProcessorThread.initialize(agentConfiguration.getJobProcessorConfig(),
                 agentConfiguration.getJobFSConfig());
-
-//        JMetric.initialize(agentConfiguration.getjMetricConfig());
-//        environment.addResource(new JMetricController());
 
         environment.jersey().register(new com.flipkart.perf.agent.resource.DeployResourcesResource(agentConfiguration.getResourceStorageFSConfig()));
         environment.jersey().register(new com.flipkart.perf.agent.resource.AdminResource(agentConfiguration));
