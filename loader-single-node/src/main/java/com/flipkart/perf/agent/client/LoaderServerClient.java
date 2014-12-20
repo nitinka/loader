@@ -29,7 +29,6 @@ public class LoaderServerClient {
     private static final String RESOURCE_JOB_HEALTH_STATUS = "/loader-server/jobs/{jobId}/healthStatus";
     private static final String RESOURCE_JOB_STATS = "/loader-server/jobs/{jobId}/jobStats?file={file}";
     private static final String RESOURCE_AGENTS = "/loader-server/agents";
-
     private static Logger logger = LoggerFactory.getLogger(LoaderServerClient.class);
     private static ObjectMapper objectMapper = ObjectMapperUtil.instance();
     private static AsyncHttpClient httpClient = new AsyncHttpClient();
@@ -129,7 +128,7 @@ public class LoaderServerClient {
      * @throws InterruptedException
      */
     public void publishJobStats(String jobId, String filePath, String trimmedFileName) throws IOException, ExecutionException, InterruptedException {
-        logger.info("Mode :"+LoaderNodeConfiguration.getInstance().getMode().toString() +"Job Id :"+jobId+" trimmedFileName: "+trimmedFileName+ " File Path:"+filePath);
+        logger.info("Mode :"+LoaderNodeConfiguration.getInstance().getMode().toString() +"+Job Id :"+jobId+" trimmedFileName: "+trimmedFileName+ " File Path:"+filePath);
         switch(LoaderNodeConfiguration.getInstance().getMode()) {
             case AGENT:
                 AsyncHttpClient.BoundRequestBuilder b = httpClient.
