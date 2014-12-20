@@ -121,9 +121,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.flipkart.perf.server.LoaderNode</mainClass>
+                    <mainClass>com.flipkart.perf.LoaderNode</mainClass>
                     <arguments>
-                        <argument>${project.basedir}/config/loader-server.yml</argument>
+                        <argument>${project.basedir}/config/loader-node.yml</argument>
                     </arguments>
                 </configuration>
             </plugin>

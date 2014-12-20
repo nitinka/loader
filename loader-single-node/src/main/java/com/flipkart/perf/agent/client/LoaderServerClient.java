@@ -1,7 +1,9 @@
 package com.flipkart.perf.agent.client;
 
+import com.flipkart.perf.LoaderNodeConfiguration;
 import com.flipkart.perf.agent.config.ServerInfo;
 import com.flipkart.perf.common.jackson.ObjectMapperUtil;
+import com.flipkart.perf.server.util.JobStatsHelper;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
@@ -127,17 +129,24 @@ public class LoaderServerClient {
      * @throws InterruptedException
      */
     public void publishJobStats(String jobId, String filePath, String trimmedFileName) throws IOException, ExecutionException, InterruptedException {
-        AsyncHttpClient.BoundRequestBuilder b = httpClient.
-                preparePost("http://" +
-                        this.getHost() +
-                        ":" +
-                        this.getPort() +
-                        RESOURCE_JOB_STATS.
-                                replace("{jobId}", jobId).
-                                replace("{file}", trimmedFileName)).
-                setBody(new FileInputStream(filePath));
+        logger.info("Mode :"+LoaderNodeConfiguration.getInstance().getMode().toString() +"Job Id :"+jobId+" trimmedFileName: "+trimmedFileName+ " File Path:"+filePath);
+        switch(LoaderNodeConfiguration.getInstance().getMode()) {
+            case AGENT:
+                AsyncHttpClient.BoundRequestBuilder b = httpClient.
+                        preparePost("http://" +
+                                this.getHost() +
+                                ":" +
+                                this.getPort() +
+                                RESOURCE_JOB_STATS.
+                                        replace("{jobId}", jobId).
+                                        replace("{file}", trimmedFileName)).
+                        setBody(new FileInputStream(filePath));
 
-        b.execute();
+                b.execute();
+                break;
+            case SINGLE_NODE:
+                JobStatsHelper.instance().persistJobStatsComingFromAgent(jobId, "127.0.0.1",trimmedFileName, new FileInputStream(filePath));
+        }
     }
 
     public static LoaderServerClient buildClient(ServerInfo serverInfo) {

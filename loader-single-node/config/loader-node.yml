@@ -1,4 +1,5 @@
 appName: "Loader Node"
+mode: SINGLE_NODE
 serverConfigFile: "./loader-single-node/config/loader-server.json"
 agentConfigFile: "./loader-single-node/config/loader-agent.json"
 
