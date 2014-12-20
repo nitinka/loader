@@ -1365,7 +1365,12 @@ function checkMonNodes(){
 
 function updateStateOnCheck(){
     var selectedTimerNodes = $.jstree._reference('#timerTree').get_checked(null, 'get_all');
-    var selectedMonNodes = $.jstree._reference('#monitoringTree').get_checked(null, 'get_all');
+    var selectedMonNodes = [];
+
+    if($.jstree._reference('#monitoringTree') != null) {
+        selectedMonNodes = $.jstree._reference('#monitoringTree').get_checked(null, 'get_all');
+    }
+
     var selTimerList = [];
     $.each(selectedTimerNodes, function(index, node){
         selTimerList.push($(node).attr('id'));
@@ -1394,7 +1399,12 @@ function updateStateOnCheck(){
 
 function updateStateOnUnCheck(){
     var selectedTimerNodes = $.jstree._reference('#timerTree').get_checked(null, 'get_all');
-    var selectedMonNodes = $.jstree._reference('#monitoringTree').get_checked(null, 'get_all');
+    var selectedMonNodes = [];
+
+    if($.jstree._reference('#monitoringTree') != null) {
+        selectedMonNodes = $.jstree._reference('#monitoringTree').get_checked(null, 'get_all');
+    }
+
     var selTimerList = [];
     $.each(selectedTimerNodes, function(index, node){
         selTimerList.push($(node).attr('id'));
