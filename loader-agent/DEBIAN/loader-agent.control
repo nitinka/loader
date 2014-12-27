@@ -1,9 +1,0 @@
-Package: loader-agent
-Version: <VERSION>
-Section: web
-Priority: optional
-Architecture: all
-Essential: no
-Depends: sun-java6-jre
-Maintainer: Nitin Kumar Agarwal [nitinka@flipkart.com]
-Description: Used by Loader Server To schedule Load Generation

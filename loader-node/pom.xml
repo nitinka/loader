@@ -1,29 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.flipkart.perf</groupId>
         <artifactId>loader</artifactId>
+        <groupId>com.flipkart.perf</groupId>
         <version>1.0.0</version>
     </parent>
-    <groupId>com.flipkart.perf</groupId>
-    <artifactId>loader-agent</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
 
-    <name>loader-agent</name>
-    <url>http://maven.apache.org</url>
+    <artifactId>loader-node</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
-        <repository>
-            <id>jetty-releases</id>
-            <name>Jetty Releases</name>
-            <url>https://oss.sonatype.org/content/repositories/jetty-releases</url>
-        </repository>
         <repository>
             <id>nitinka.mvn.repo</id>
             <url>https://github.com/nitinka/mvn-repo/raw/master</url>
@@ -37,24 +29,62 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.0.13</version>
         </dependency>
         <dependency>
-            <groupId>com.yammer.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-            <version>0.6.1</version>
+            <groupId>org.rrd4j</groupId>
+            <artifactId>rrd4j</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.3</version>
         </dependency>
         <dependency>
             <groupId>com.flipkart.perf</groupId>
-            <artifactId>utilities</artifactId>
+            <artifactId>loader-core</artifactId>
             <version>1.0.0</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+            <version>0.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-assets</artifactId>
+            <version>0.7.1</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-multipart</artifactId>
-            <version>1.15</version>
+            <version>1.18.1</version>
         </dependency>
         <dependency>
             <groupId>com.ning</groupId>
@@ -62,9 +92,14 @@
             <version>1.7.9</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlets</artifactId>
-            <version>8.1.8.v20121106</version>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.9-RC1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>nitinka.jmetrics</groupId>
@@ -86,9 +121,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.flipkart.perf.agent.LoaderAgentService</mainClass>
+                    <mainClass>com.flipkart.perf.LoaderNode</mainClass>
                     <arguments>
-                        <argument>${project.basedir}/config/loader-agent.yml</argument>
+                        <argument>${project.basedir}/config/loader-node.yml</argument>
                     </arguments>
                 </configuration>
             </plugin>
