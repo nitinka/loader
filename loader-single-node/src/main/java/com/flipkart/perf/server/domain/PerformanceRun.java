@@ -26,7 +26,7 @@ public class PerformanceRun {
     private String businessUnit = "default";
     private String team = "default";
     private String runName;
-    private List<LoadPart> loadParts;
+    private List<LoadPart> loadParts = new ArrayList<LoadPart>();
     private List<OnDemandMetricCollection> onDemandMetricCollections;
     private List<MetricCollection> metricCollections;
     private String description = "";
@@ -52,6 +52,11 @@ public class PerformanceRun {
 
     public PerformanceRun setLoadParts(List<LoadPart> loadParts) {
         this.loadParts = loadParts;
+        return this;
+    }
+
+    public PerformanceRun addLoadPart(LoadPart loadPart) {
+        this.loadParts.add(loadPart);
         return this;
     }
 
@@ -165,8 +170,9 @@ public class PerformanceRun {
         return description;
     }
 
-    public void setDescription(String description) {
+    public PerformanceRun setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public static PerformanceRun runExistsOrException(String runName) throws IOException {

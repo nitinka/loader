@@ -108,7 +108,7 @@ public class LoaderNode extends Application<LoaderNodeConfiguration> {
             environment.jersey().register(new DeployResourcesResource(serverConfiguration.getResourceStorageFSConfig()));
             environment.jersey().register(new AgentResource(serverConfiguration.getAgentConfig()));
             environment.jersey().register(new RunResource(serverConfiguration.getJobFSConfig()));
-            environment.jersey().register(new FunctionResource(serverConfiguration.getResourceStorageFSConfig()));
+            environment.jersey().register(new FunctionResource());
             environment.jersey().register(new BusinessUnitResource(serverConfiguration.getJobFSConfig()));
             environment.jersey().register(new AdminResource(serverConfiguration));
             environment.jersey().register(new ScheduledWorkflowResource());

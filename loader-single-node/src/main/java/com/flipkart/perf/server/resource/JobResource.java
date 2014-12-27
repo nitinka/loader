@@ -1,17 +1,18 @@
 package com.flipkart.perf.server.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.flipkart.perf.LoaderNodeConfiguration;
 import com.flipkart.perf.common.util.FileHelper;
+import com.flipkart.perf.domain.Group;
+import com.flipkart.perf.domain.GroupFunction;
 import com.flipkart.perf.server.cache.JobsCache;
 import com.flipkart.perf.server.config.AgentConfig;
 import com.flipkart.perf.server.config.JobFSConfig;
 import com.flipkart.perf.server.daemon.JobDispatcherThread;
-import com.flipkart.perf.server.domain.Job;
-import com.flipkart.perf.server.domain.JobRequest;
-import com.flipkart.perf.server.domain.PerformanceRun;
-import com.flipkart.perf.server.domain.ResourceCollectionInstance;
+import com.flipkart.perf.server.domain.*;
 import com.flipkart.perf.server.exception.InvalidJobStateException;
 import com.flipkart.perf.server.exception.JobException;
+import com.flipkart.perf.server.service.FunctionService;
 import com.flipkart.perf.server.util.JobStatsHelper;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import com.flipkart.perf.server.util.ResponseBuilder;
@@ -40,7 +41,7 @@ import java.util.concurrent.ExecutionException;
  */
 @Path("/loader-server/jobs")
 public class JobResource {
-
+    private FunctionService functionService = new FunctionService(LoaderNodeConfiguration.getInstance().getServerConfig().getResourceStorageFSConfig());
     private AgentConfig agentConfig;
     private JobFSConfig jobFSConfig;
     private static JobStatsHelper jobStatsHelper;
@@ -101,6 +102,63 @@ public class JobResource {
     public Job submitJob(JobRequest jobRequest) throws IOException {
         PerformanceRun.runExistsOrException(jobRequest.getRunName(), jobRequest.getRunVersion());
         return raiseJobRequest(jobRequest);
+    }
+
+
+    @Path("/chrome/jobs")
+    @POST
+    @Timed
+    public Job queueJobFromExtension(ExtensionJob extensionJob) throws IOException {
+        /**
+         * Create run at runtime
+         * Create a job and associate with the run
+         * return the job id
+         */
+
+        String runName = UUID.randomUUID().toString();
+        String functionClass = "perf.operation.http.function.HttpGet";
+        if(extensionJob.getHttpMethod().toUpperCase().equals("POST")) {
+            functionClass = "perf.operation.http.function.HttpPost";
+        }
+
+        else if(extensionJob.getHttpMethod().toUpperCase().equals("PUT")) {
+            functionClass = "perf.operation.http.function.HttpPut";
+        }
+
+        else if(extensionJob.getHttpMethod().toUpperCase().equals("DELETE")) {
+            functionClass = "perf.operation.http.function.HttpDelete";
+        }
+
+        PerformanceRun performanceRun = functionService.buildPerformanceRun(functionClass,runName);
+        performanceRun.setBusinessUnit("chrome-extension").setTeam("chrome-extension");
+
+        // Update Load Part
+        LoadPart loadPart = performanceRun.getLoadParts().get(0);
+        loadPart.setAgents(extensionJob.getLoadAgents());
+
+        // Update Group
+        Group group = loadPart.getLoad().getGroups().get(0);
+        group.setDuration(extensionJob.getDurationMS());
+        group.setGroupStartDelay(extensionJob.getLoadStartDelay());
+        group.setRepeats(extensionJob.getRepeats());
+        group.setThreads(extensionJob.getThreads());
+        group.setThreadStartDelay(extensionJob.getThreadStartDelay());
+        group.setThroughput(extensionJob.getThroughput());
+        group.setWarmUpRepeats(extensionJob.getWarmUpRepeats());
+
+        // Update Function
+        GroupFunction function = group.getFunctions().get(0);
+        function.setDumpData(true);
+        function.addParam("url", extensionJob.getUrl());
+        function.addParam("expectedStatusCode", extensionJob.getExpectedStatusCode());
+        function.addParam("headers", extensionJob.getHeaders());
+
+        if(extensionJob.getHttpMethod().toUpperCase().equals("POST") || extensionJob.getHttpMethod().toUpperCase().equals("PUT"))  {
+            function.addParam("bodyString", extensionJob.getBody());
+        }
+
+        performanceRun.persist();
+        return raiseJobRequest(new JobRequest().setRunName(runName).setRunVersion("1"));
     }
 
     /**

@@ -20,8 +20,8 @@ function getRunningJobs(){
 						startTime = "Yet To Start";
 					}
 					job["startTime"] = startTime;
-					job["runUrl"] = "/updaterun.html?&runName=" + job["runName"];
-					job["jobUrl"] = "/jobdetails.html?&jobId=" + job["jobId"];
+					job["runUrl"] = "updaterun.html?&runName=" + job["runName"];
+					job["jobUrl"] = "jobdetails.html?&jobId=" + job["jobId"];
 					// var insertHtml = "<tbody><tr><td><a href=\"/jobdetails.html?&jobid=" + jobId + "\">" + jobId + "</a></td><td><a href=\"updaterun.html?&runname=" + jobName +"\">" + jobName + "</a></td><td>" + startTime + "</td><td>" + status + "</td><td>" + agents + "</td></tbody>";
 					// $("#jobsList").append(insertHtml);
 				})
