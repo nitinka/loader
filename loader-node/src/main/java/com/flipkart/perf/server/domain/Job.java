@@ -15,7 +15,6 @@ import com.flipkart.perf.server.util.DeploymentHelper;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import com.flipkart.perf.server.util.ResponseBuilder;
 import io.dropwizard.jersey.params.IntParam;
-import nitinka.jmetrics.JMetric;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jetty.util.ConcurrentHashSet;
@@ -246,7 +245,6 @@ public  class Job {
      */
     public void queued() throws IOException {
         this.jobStatus = JOB_STATUS.QUEUED;
-        JMetric.offerMetric("server.jobs.queued", 1);
 
         // Adding to Queued Jobs File
         List<String> queuedJobs = objectMapper.readValue(new File(configuration.getJobFSConfig().getQueuedJobsFile()), List.class);
@@ -264,7 +262,6 @@ public  class Job {
      */
     public void started() throws IOException {
         this.jobStatus = JOB_STATUS.RUNNING;
-        JMetric.offerMetric("server.jobs.running",1);
 
         // Add to Running Jobs file
         List<String> runningJobs = objectMapper.readValue(new File(configuration.getJobFSConfig().getRunningJobsFile()), List.class);
@@ -286,7 +283,6 @@ public  class Job {
      */
     private void ended() throws IOException, ExecutionException, InterruptedException {
         this.endTime = new Date();
-        JMetric.offerMetric("server.jobs.ended",1);
         this.stopMonitoring();
         CounterCompoundThread.instance().removeJob(jobId);
 //        CounterThroughputThread.instance().removeJob(jobId);
@@ -304,7 +300,6 @@ public  class Job {
 
     public void killed() throws InterruptedException, ExecutionException, IOException {
         this.jobStatus = JOB_STATUS.KILLED;
-        JMetric.offerMetric("server.jobs.killed",1);
         ended();
     }
 
@@ -316,7 +311,6 @@ public  class Job {
      */
     public void failedToStart(String reason) throws IOException {
         this.jobStatus = JOB_STATUS.FAILED_TO_START;
-        JMetric.offerMetric("server.jobs.failedToStart",1);
         this.failedToStartReason = reason;
         this.endTime = new Date();
         this.persist();

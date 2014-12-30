@@ -107,7 +107,11 @@ public class JobStatsSyncThread extends Thread{
     }
 
     private String trimFileName(String absoluteFileName) {
-        String trimmedFileName = absoluteFileName.replace(jobFSConfig.getJobBasePath(), "");
+        String pathToTrim = jobFSConfig.getJobBasePath();
+        if(pathToTrim.startsWith(".")) {
+            pathToTrim = absoluteFileName.substring(0,absoluteFileName.indexOf(pathToTrim)+pathToTrim.length());
+        }
+        String trimmedFileName = absoluteFileName.replace(pathToTrim, "");
         trimmedFileName = trimmedFileName.substring(0, trimmedFileName.indexOf(".part"));
         return trimmedFileName;
     }

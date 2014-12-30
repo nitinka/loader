@@ -3,7 +3,6 @@ package com.flipkart.perf.server.domain;
 import com.flipkart.perf.common.util.FileHelper;
 import com.flipkart.perf.server.config.LoaderServerConfiguration;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
-import nitinka.jmetrics.JMetric;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +95,6 @@ public class LoaderAgent {
     public LoaderAgent setFree() throws IOException {
     	if(this.status != LoaderAgentStatus.FREE) {
     		this.status = LoaderAgentStatus.FREE;
-    		JMetric.offerMetric("agents.free", 1);
     		// parallel writes possible
     		persist();
     	}
@@ -106,7 +104,6 @@ public class LoaderAgent {
     public LoaderAgent setBusy() throws IOException {
     	if(this.status != LoaderAgentStatus.BUSY) {
     		this.status = LoaderAgentStatus.BUSY;
-    		JMetric.offerMetric("agents.busy", 1);
     		// parallel writes possible
     		persist();
     	}
@@ -121,7 +118,6 @@ public class LoaderAgent {
     public LoaderAgent setDisabled() throws IOException {
     	if(this.status != LoaderAgentStatus.DISABLED) {
     		this.status = LoaderAgentStatus.DISABLED;
-    		JMetric.offerMetric("agents.disabled", 1);
     		persist();
     	}
         return this;
@@ -130,7 +126,6 @@ public class LoaderAgent {
     public LoaderAgent setNotReachable() throws IOException {
     	if(this.status != LoaderAgentStatus.NOT_REACHABLE) {
     		this.status = LoaderAgentStatus.NOT_REACHABLE;
-    		JMetric.offerMetric("agents.notReachable", 1);
     		persist();
     	}
         return this;
@@ -139,7 +134,6 @@ public class LoaderAgent {
     public LoaderAgent setDRegistered() throws IOException {
     	if(this.status != LoaderAgentStatus.D_REGISTERED) {
     		this.status = LoaderAgentStatus.D_REGISTERED;
-    		JMetric.offerMetric("agents.dRegistered", 1);
     		persist();
     	}
         return this;

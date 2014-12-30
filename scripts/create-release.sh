@@ -2,9 +2,9 @@
 echo "Setting up Server info"
 CODE_ROOT=../loader-node
 COMPONENT=loader-server
-RELEASE_VERSION=1.0.0
+RELEASE_VERSION=loader-$1
 
-mkdir -p ./releases/$RELEASE_VERSION/etc/$COMPONENT
+mkdir -p ./releases/$RELEASE_VERSION/etc/loader-node
 mkdir -p ./releases/$RELEASE_VERSION/var/log/$COMPONENT
 mkdir -p ./releases/$RELEASE_VERSION/var/log/$COMPONENT/jobs
 mkdir -p ./releases/$RELEASE_VERSION/var/log/$COMPONENT/runs
@@ -49,12 +49,16 @@ fi
 
 #Copy Required Files
 echo "\n****Copying Config Files"
-cp -r $CODE_ROOT/config/* ./releases/$RELEASE_VERSION/etc/$COMPONENT/
+for file in `ls -1 $CODE_ROOT/config`
+do
+	cp -r $CODE_ROOT/config/$file ./releases/$RELEASE_VERSION/etc/loader-node/	
+done
+
 
 #Setting up Core Libraries
 echo "\n****Copying loader-core libraries for loader-server"
-cp -R ../loader-core/target/platform.zip ./releases/$RELEASE_VERSION/usr/share/$PKG/platformLibs/
-unzip ../loader-core/target/platform.zip -d ./releases/$RELEASE_VERSION/usr/share/$PKG/platformLibs/
+cp -R ../loader-core/target/platform.zip ./releases/$RELEASE_VERSION/usr/share/$COMPONENT/platformLibs/
+unzip ../loader-core/target/platform.zip -d ./releases/$RELEASE_VERSION/usr/share/$COMPONENT/platformLibs/
 
 #Setting up Out of Box Perf Operations
 echo "\n****Copying Out out Box Perf Operations"
@@ -63,8 +67,23 @@ cp ../loader-common-operations/target/loader-common-operations-*-jar-with-depend
 
 #Setting Sample Runs
 echo "\n****Setting up Sample Performance Run Schemas"
-cp -r ../loader-server/sample/runs/SampleHttpGetFor10000Times ./releases/$RELEASE_VERSION/var/log/loader-server/runs/
-cp -r ../loader-server/sample/runs/SampleHttpGetFor30Seconds ./releases/$RELEASE_VERSION/var/log/loader-server/runs/
+cp -r ../loader-node/sample/runs/SampleHttpGetFor10000Times ./releases/$RELEASE_VERSION/var/log/loader-server/runs/
+cp -r ../loader-node/sample/runs/SampleHttpGetFor30Seconds ./releases/$RELEASE_VERSION/var/log/loader-server/runs/
+
+
+# Copying libs required to start loader-node
+mkdir -p ./releases/$RELEASE_VERSION/lib
+for file in `ls -1 ../loader-node/target/*.jar`
+do
+        cp  $file ./releases/$RELEASE_VERSION/lib/
+done
+
+for file in `ls -1 ../loader-node/target/lib/*.jar`
+do
+        cp -r $file ./releases/$RELEASE_VERSION/lib/
+done
+
+cp ./function-configs/* ./releases/$RELEASE_VERSION/usr/share/loader-server/config/
 
 # Setting up loader agent
 echo "\n===============Setting up Loader Agent file system================\n"
@@ -89,3 +108,28 @@ then
 else
         echo "[]" > $runningJobsFile 
 fi
+
+# Replace paths
+sed -i '' 's/loader-node/etc\/loader-node/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-node.yml
+sed -i '' 's/config\///g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-node.yml
+
+sed -i '' 's/\/usr/\.\/usr/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-agent.json
+sed -i '' 's/\/var/\.\/var/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-agent.json
+sed -i '' 's/\/etc/\.\/etc/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-agent.json
+
+sed -i '' 's/\/usr/\.\/usr/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-server.json
+sed -i '' 's/\/var/\.\/var/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-server.json
+sed -i '' 's/\/etc/\.\/etc/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-server.json
+sed -i '' 's/etc\/loader-server/etc\/loader-node/g' ./releases/$RELEASE_VERSION/etc/loader-node/loader-server.json
+
+
+
+# Moving Start script
+cp start-node.sh ./releases/$RELEASE_VERSION/
+cp stop-node.sh ./releases/$RELEASE_VERSION/
+
+echo "Creating loader zip file"
+cd ./releases
+zip -r $RELEASE_VERSION.zip $RELEASE_VERSION
+mv $RELEASE_VERSION.zip ../
+cd -

@@ -8,7 +8,6 @@ import com.flipkart.perf.agent.config.LoaderAgentConfiguration;
 import com.flipkart.perf.server.config.LoaderServerConfiguration;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import io.dropwizard.Configuration;
-import org.codehaus.jackson.JsonParseException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,10 +18,6 @@ public class LoaderNodeConfiguration extends Configuration {
     /**
      * Takes 3 values
      */
-    public enum Mode {
-        AGENT, SERVER, SINGLE_NODE;
-    }
-    private Mode mode;
     private String serverConfigFile;
     private String agentConfigFile;
 
@@ -91,14 +86,6 @@ public class LoaderNodeConfiguration extends Configuration {
             }
         }
         return agentConfig;
-    }
-
-    public Mode getMode() {
-        return mode;
-    }
-
-    public void setMode(Mode mode) {
-        this.mode = mode;
     }
 
     public static void main(String[] args) throws IOException {

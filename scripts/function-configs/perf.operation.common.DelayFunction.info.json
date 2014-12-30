@@ -1,0 +1,1 @@
+{"function":"perf.operation.common.DelayFunction","inputParameters":{"DELAY":{"name":"DELAY","description":"Introduces millisecond Delay in function call","mandatory":true,"defaultValue":1,"type":"SCALER"}},"outputParameters":{},"description":["Default Description : Its a Performance Function"],"customTimers":[],"customCounters":[],"customHistograms":[],"sharedData":{}}

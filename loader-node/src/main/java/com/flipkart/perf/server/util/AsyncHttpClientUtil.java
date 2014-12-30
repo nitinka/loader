@@ -1,7 +1,6 @@
 package com.flipkart.perf.server.util;
 
 import com.ning.http.client.AsyncHttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Created with IntelliJ IDEA.

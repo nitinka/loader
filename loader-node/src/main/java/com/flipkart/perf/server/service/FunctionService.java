@@ -8,12 +8,8 @@ import com.flipkart.perf.server.config.ResourceStorageFSConfig;
 import com.flipkart.perf.server.domain.*;
 import com.flipkart.perf.server.util.ObjectMapperUtil;
 import com.flipkart.perf.server.util.ResponseBuilder;
-import io.dropwizard.jersey.params.BooleanParam;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import java.io.File;
 import java.io.FileInputStream;

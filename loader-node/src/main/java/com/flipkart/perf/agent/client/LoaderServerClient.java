@@ -1,6 +1,6 @@
 package com.flipkart.perf.agent.client;
 
-import com.flipkart.perf.LoaderNodeConfiguration;
+import com.flipkart.perf.LoaderNode;
 import com.flipkart.perf.agent.config.ServerInfo;
 import com.flipkart.perf.common.jackson.ObjectMapperUtil;
 import com.flipkart.perf.server.util.JobStatsHelper;
@@ -128,8 +128,8 @@ public class LoaderServerClient {
      * @throws InterruptedException
      */
     public void publishJobStats(String jobId, String filePath, String trimmedFileName) throws IOException, ExecutionException, InterruptedException {
-        logger.info("Mode :"+LoaderNodeConfiguration.getInstance().getMode().toString() +"+Job Id :"+jobId+" trimmedFileName: "+trimmedFileName+ " File Path:"+filePath);
-        switch(LoaderNodeConfiguration.getInstance().getMode()) {
+        logger.info("Mode :"+ LoaderNode.mode.toString() +"+Job Id :"+jobId+" trimmedFileName: "+trimmedFileName+ " File Path:"+filePath);
+        switch(LoaderNode.mode) {
             case AGENT:
                 AsyncHttpClient.BoundRequestBuilder b = httpClient.
                         preparePost("http://" +

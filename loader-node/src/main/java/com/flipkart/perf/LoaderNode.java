@@ -21,9 +21,6 @@ import com.flipkart.perf.server.domain.WorkflowScheduler;
 import com.flipkart.perf.server.health.CounterCompoundThreadHealthCheck;
 import com.flipkart.perf.server.health.TimerComputationThreadHealthCheck;
 import com.flipkart.perf.server.resource.*;
-import com.flipkart.perf.server.resource.AdminResource;
-import com.flipkart.perf.server.resource.DeployResourcesResource;
-import com.flipkart.perf.server.resource.JobResource;
 import com.flipkart.perf.server.util.AsyncHttpClientUtil;
 import com.flipkart.perf.server.util.DeploymentHelper;
 import com.flipkart.perf.server.util.JobStatsHelper;
@@ -31,6 +28,7 @@ import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.apache.commons.cli.*;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +42,32 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class LoaderNode extends Application<LoaderNodeConfiguration> {
-    private static Logger logger = LoggerFactory.getLogger(LoaderNode.class);
+    private static Logger logger;
+
+    public static enum Mode {
+        AGENT, SERVER, SINGLE_NODE;
+    }
+    public static Mode mode;
+    private static String serverHost = null;
+    private static int serverPort = -1;
+
     private ScheduledExecutorService scheduledExecutorService;
 
+    private static Options options = new Options();
+    static {
+        logger = LoggerFactory.getLogger(LoaderNode.class);
+        mode = Mode.SINGLE_NODE;
+
+        options.addOption("m", "mode", true, "Loader Node Mode. Possible Values : AGENT, SERVER, SINGLE_NODE. By Default it is SINGLE_NODE. ");
+        options.addOption("s", "server", true, "Server Ip. Used in case mode is AGENT. Default value is localhost");
+        options.addOption("p", "port", true, "Server Port. Used in case mode is AGENT. Default value is 9999");
+        Option config = new Option("c", "config", true, "configuration file.");
+        config.setRequired(true);
+        options.addOption(config);
+    }
+
     public LoaderNode() {}
-	
+
     @Override
     public void initialize(Bootstrap<LoaderNodeConfiguration> bootstrap) {
         bootstrap.addBundle(new AssetsBundle("/assets", "/loader-ui", "index.html"));
@@ -56,8 +75,8 @@ public class LoaderNode extends Application<LoaderNodeConfiguration> {
 
     @Override
     public void run(LoaderNodeConfiguration configuration, Environment environment) throws Exception {
-        if(configuration.getMode().equals(LoaderNodeConfiguration.Mode.SERVER)
-                || configuration.getMode().equals(LoaderNodeConfiguration.Mode.SINGLE_NODE)) {
+        if(mode.equals(Mode.SERVER)
+                || mode.equals(Mode.SINGLE_NODE)) {
             LoaderServerConfiguration serverConfiguration = configuration.getServerConfig();
 
             /**
@@ -117,12 +136,19 @@ public class LoaderNode extends Application<LoaderNodeConfiguration> {
             environment.healthChecks().register("Timer Health Check", new TimerComputationThreadHealthCheck());
         }
 
-        if(configuration.getMode().equals(LoaderNodeConfiguration.Mode.AGENT)
-                || configuration.getMode().equals(LoaderNodeConfiguration.Mode.SINGLE_NODE)) {
+        if(mode.equals(Mode.AGENT)
+                || mode.equals(Mode.SINGLE_NODE)) {
             /**
              * Initialise Agent Stuff
              */
             LoaderAgentConfiguration agentConfiguration = configuration.getAgentConfig();
+            if(serverHost != null) {
+                agentConfiguration.getServerInfo().setHost(serverHost);
+            }
+
+            if(serverPort != -1) {
+                agentConfiguration.getServerInfo().setPort(serverPort);
+            }
 
             JobHealthCheckThread.initialize(LoaderServerClient.buildClient(agentConfiguration.getServerInfo()),
                     agentConfiguration.getJobProcessorConfig());
@@ -169,8 +195,42 @@ public class LoaderNode extends Application<LoaderNodeConfiguration> {
     }
 
     public static void main(String[] args) throws Exception {
-        args = new String[]{"server",args[0]};
-        new LoaderNode().run(args);
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = null;
+        try {
+            cmd = parser.parse(options, args);
+        }
+        catch(Exception e) {
+            logger.error("",e);
+            printHelp();
+            return;
+        }
+
+
+        if(cmd.hasOption('m')) {
+            mode = Mode.valueOf(cmd.getOptionValue('m'));
+        }
+
+        if(mode.equals(Mode.AGENT)) {
+            if(cmd.hasOption('s')) {
+                serverHost = cmd.getOptionValue('m');
+            }
+
+            if(cmd.hasOption('p')) {
+                serverPort = Integer.parseInt(cmd.getOptionValue('p'));
+            }
+        }
+
+        if(cmd.hasOption('h')) {
+            printHelp();
+        }
+
+        new LoaderNode().run(new String[] {"server", cmd.getOptionValue('c')});
+    }
+
+    private static void printHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp( "ant", options );
     }
 
 }

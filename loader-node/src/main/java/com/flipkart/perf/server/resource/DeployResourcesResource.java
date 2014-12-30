@@ -54,6 +54,7 @@ public class DeployResourcesResource {
                 deployUDF(new FileInputStream(unDeployedUDFLib), unDeployedUDFLib.getName());
                 unDeployedUDFLib.delete();
             } catch (Exception e) {
+                logger.error(e.getLocalizedMessage());
                 logger.error("Exception in deploying undeployed UDFs", e);
             }
         }

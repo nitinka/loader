@@ -8,8 +8,6 @@ package com.flipkart.perf.server.config;
  * To change this template use File | Settings | File Templates.
  */
 
-import nitinka.jmetrics.JMetricConfig;
-
 public class LoaderServerConfiguration{
     private ScheduledExecutorConfig scheduledExecutorConfig;
     private ResourceStorageFSConfig resourceStorageFSConfig;
@@ -17,7 +15,6 @@ public class LoaderServerConfiguration{
     private MonitoringAgentConfig monitoringAgentConfig;
     private JobFSConfig jobFSConfig;
     private DataFixConfig dataFixConfig;
-    private JMetricConfig jMetricConfig;
     private String reportConfigFile;
 
     private static LoaderServerConfiguration instance;
@@ -87,14 +84,6 @@ public class LoaderServerConfiguration{
     public LoaderServerConfiguration setDataFixConfig(DataFixConfig dataFixConfig) {
         this.dataFixConfig = dataFixConfig;
         return this;
-    }
-
-    public JMetricConfig getjMetricConfig() {
-        return jMetricConfig;
-    }
-
-    public void setjMetricConfig(JMetricConfig jMetricConfig) {
-        this.jMetricConfig = jMetricConfig;
     }
 
     public ScheduledExecutorConfig getScheduledExecutorConfig() {
