@@ -1,12 +1,13 @@
 
 function returnTimerGraphs(url, grpIndex, timerIndex, chart1StartIndex, chart2StartIndex){
+    debugger;
 	var chart1, chart2;
 	formatTime = d3.time.format("%H:%M"),
  	formatMinutes = function(d) { return formatTime(new Date(d)); };
 	nv.addGraph(function() {
-  		chart1 = nv.models.lineChart().
+  		chart1 = nv.models.lineWithFocusChart().
   		  	margin({left: 80});
-  		chart2 = nv.models.lineChart().
+  		chart2 = nv.models.lineWithFocusChart().
   			margin({left: 80});
 		chart1.xAxis
   			//.ticks(d3.time.minutes, 5)
@@ -16,7 +17,7 @@ function returnTimerGraphs(url, grpIndex, timerIndex, chart1StartIndex, chart2St
   		chart1.yAxis
       		.axisLabel('Time (ms)')
       		.tickFormat(d3.format(',.2f'));
-
+        debugger;
   		chart2.xAxis
 		  	//.ticks(d3.time.minutes, 5)
 		  	.axisLabel('Time (HH:MM)')
@@ -88,7 +89,7 @@ function metrics(initialize, url, grpIndex, timerIndex, c1Index, c2Index) {
 	  console.log("last1Index", last1Index, "last2Index", last2Index);
 	  return { "chart1":[
     					{values: window.stats[grpIndex][timerIndex]["statsqueues"]["dumpMean"].slice(c1Index, last1Index),key: "Dump Mean",color: "#ff7f0e"},
-						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["overAllMean"].slice(c1Index, last1Index),key: "Over All Mean",color: "#a02c2c",},
+						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["overAllMean"].slice(c1Index, last1Index),key: "Over All Mean",color: "#a02c2c"},
 						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["fiftieth"].slice(c1Index, last1Index),key: "50Th%",color: "#B40404"},
 						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["seventyFifth"].slice(c1Index, last1Index),key: "75Th%",color: "#0B610B"	},
 						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["ninetieth"].slice(c1Index, last1Index),key: "90Th%",color: "#0B0B61"},
@@ -98,7 +99,7 @@ function metrics(initialize, url, grpIndex, timerIndex, c1Index, c2Index) {
 	  					],
 			   "chart2":[
 						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["dumpThroughPut"].slice(c2Index, last2Index),key: "Dump Throughput",color: "#2ca02c"},
-						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["overAllThroughPut"].slice(c2Index, last2Index),key: "Over All ThroughPut",color: "#DF01D7",}
+						{values: window.stats[grpIndex][timerIndex]["statsqueues"]["overAllThroughPut"].slice(c2Index, last2Index),key: "Over All ThroughPut",color: "#DF01D7"}
 						]
 			 };
 }

@@ -1,3 +1,6 @@
+/**
+ * Created by sagar on 20/02/15.
+ */
 ko.bindingHandlers.graphsInitialization = {
     update: function(element, valueAccessor, allBindings, viewModel, bindingContext){
         var value = valueAccessor();
@@ -13,7 +16,7 @@ ko.bindingHandlers.addSlider = {
         var value = valueAccessor();
         var valueUnWrapperd = ko.unwrap(value);
         if(valueUnWrapperd){
-            bindingContext.$parent.addSlider(element);
+            //bindingContext.$parent.addSlider(element);
         }
     }
 }
@@ -23,7 +26,7 @@ ko.bindingHandlers.addCounterSlider = {
         var value = valueAccessor();
         var valueUnWrapperd = ko.unwrap(value);
         if(valueUnWrapperd){
-            bindingContext.$data.addSlider(element);
+            //bindingContext.$data.addSlider(element);
         }
     }
 }
@@ -79,6 +82,12 @@ function getMonitoringStats(){
         complete: function() {
         }
     });
+}
+
+function exportGraph(event) {
+    if (this) {
+        saveSvgAsPng(this, "diagram.png");
+    }
 }
 
 function createGroupsTree(jobStats) {
@@ -178,7 +187,7 @@ function createGroupsTree(jobStats) {
                 window.viewModel.isVisible(true);
                 window.viewModel.groups()[groupIndex].isVisible(true);
                 window.viewModel.groups()[groupIndex].functions()[functionIndex].isVisible(true);
-                window.viewModel.groups()[groupIndex].functions()[functionIndex].timersVisible(true); 
+                window.viewModel.groups()[groupIndex].functions()[functionIndex].timersVisible(true);
                 var model = window.viewModel.groups()[groupIndex].functions()[functionIndex];
                 model.showFuncTimersGraphs();
                 break;
@@ -188,7 +197,7 @@ function createGroupsTree(jobStats) {
                 window.viewModel.isVisible(true);
                 window.viewModel.groups()[groupIndex].isVisible(true);
                 window.viewModel.groups()[groupIndex].functions()[functionIndex].isVisible(true);
-                window.viewModel.groups()[groupIndex].functions()[functionIndex].countersVisible(true); 
+                window.viewModel.groups()[groupIndex].functions()[functionIndex].countersVisible(true);
                 var model = window.viewModel.groups()[groupIndex].functions()[functionIndex];
                 model.showFuncCounterGraphs();
                 break;
@@ -198,7 +207,7 @@ function createGroupsTree(jobStats) {
                 window.viewModel.isVisible(true);
                 window.viewModel.groups()[groupIndex].isVisible(true);
                 window.viewModel.groups()[groupIndex].functions()[functionIndex].isVisible(true);
-                window.viewModel.groups()[groupIndex].functions()[functionIndex].histogramsVisible(true); 
+                window.viewModel.groups()[groupIndex].functions()[functionIndex].histogramsVisible(true);
                 var model = window.viewModel.groups()[groupIndex].functions()[functionIndex];
                 model.showFuncHistogramGraphs();
                 break;
@@ -209,7 +218,7 @@ function createGroupsTree(jobStats) {
                 window.viewModel.isVisible(true);
                 window.viewModel.groups()[groupIndex].isVisible(true);
                 window.viewModel.groups()[groupIndex].functions()[functionIndex].isVisible(true);
-                window.viewModel.groups()[groupIndex].functions()[functionIndex].timersVisible(true); 
+                window.viewModel.groups()[groupIndex].functions()[functionIndex].timersVisible(true);
                 var model = window.viewModel.groups()[groupIndex].functions()[functionIndex].timers()[timerIndex];
                 model.showTimerGraphs();
                 break;
@@ -222,7 +231,7 @@ function createGroupsTree(jobStats) {
                 window.viewModel.isVisible(true);
                 window.viewModel.groups()[groupIndex].isVisible(true);
                 window.viewModel.groups()[groupIndex].functions()[functionIndex].isVisible(true);
-                window.viewModel.groups()[groupIndex].functions()[functionIndex].histogramsVisible(true); 
+                window.viewModel.groups()[groupIndex].functions()[functionIndex].histogramsVisible(true);
                 var model = window.viewModel.groups()[groupIndex].functions()[functionIndex].histograms()[histIndex];
                 model.showHistogramGraphs();
                 break;
@@ -292,12 +301,12 @@ function createGroupsTree(jobStats) {
     $("#timerTree").bind("loaded.jstree", function(event, data) {
         $("#timerTree").jstree("open_all");
         checkTimerNodes();
-        //$.jstree._reference("#timerTree").check_node("#node_"+window["groups"][0]["groupName"]);  
+        //$.jstree._reference("#timerTree").check_node("#node_"+window["groups"][0]["groupName"]);
     });
     $("#timerTree").bind("refresh.jstree", function(event, data) {
         $("#timerTree").jstree("open_all");
         checkTimerNodes();
-        //$.jstree._reference('#timerTree').check_node("#node_"+window["groups"][0]["groupName"]);  
+        //$.jstree._reference('#timerTree').check_node("#node_"+window["groups"][0]["groupName"]);
     });
 }
 
@@ -376,20 +385,20 @@ function getMetricsChildren(metricStats, type, groupIndex, functionIndex, metric
         return undefined;
     }
     $.each(metricStats, function(index, metric) {
-            children.push({
-                "attr": {
-                    "id": "node_" + metric["name"]+ "_" + groupIndex + "_" + functionIndex,
-                    "rel": type
-                },
-                "metadata": {
-                    "nodeType": type,
-                    "groupIndex":groupIndex,
-                    "functionIndex":functionIndex,
-                    "metricIndex":metricIndex,
-                    "keyIndex":index
-                },
-                "data": metric["name"]
-            });
+        children.push({
+            "attr": {
+                "id": "node_" + metric["name"]+ "_" + groupIndex + "_" + functionIndex,
+                "rel": type
+            },
+            "metadata": {
+                "nodeType": type,
+                "groupIndex":groupIndex,
+                "functionIndex":functionIndex,
+                "metricIndex":metricIndex,
+                "keyIndex":index
+            },
+            "data": metric["name"]
+        });
     });
     return children;
 }
@@ -598,14 +607,14 @@ var groupsGraphViewModel = function(jobStats) {
         var grps = self.groups();
         $.each(grps, function(index , grp){
             grp.showGroupGraphs();
-        });      
+        });
     }
     self.hideGraphs = function(){
         self.isVisible(false);
         var grps = self.groups();
         $.each(grps, function(index , grp){
             grp.hideGroupGraphs();
-        });   
+        });
     }
 }
 
@@ -658,7 +667,7 @@ var functionGraphViewModel = function(func, groupUrl) {
         });
         return timers;
     }
-    
+
     self.getHistograms = function(){
         var histos = [];
         if(func["metrics"]["histograms"]==undefined) return histos;
@@ -787,7 +796,7 @@ var histogramGraphViewModel = function(histogram, functionUrl){
         return map;
     }
     self.chartIndexes = self.createIndexesMap();
-    
+
     self.hide = function() {
         $(this).hide();
     }
@@ -817,13 +826,15 @@ var histogramGraphViewModel = function(histogram, functionUrl){
         var tmpCharts = [];
         $.each(charts, function(index, chart){
             var tmpChart = [];
-            var startIndex = self.chartIndexes[index].sliderStartIndex;
-            var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+            //var startIndex = self.chartIndexes[index].sliderStartIndex;
+            //var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+            var startIndex = 0;
+            var lastIndex = self.dataLength();
             $.each(chart, function(ind, line){
                 tmpChart.push({"key":line["key"],"color":line["color"], "values": line["values"].slice(startIndex, lastIndex)});
             });
             tmpCharts.push(tmpChart);
-        }); 
+        });
         $.each(tmpCharts, function(index, tmpChart){
             plotGraph(tmpChart, $($(currElement).parents(".histogramsGraphs")[0]).find("svg")[index], chartScheme[index]["xLegend"], chartScheme[index]["yLegend"]);
         });
@@ -855,16 +866,15 @@ var histogramGraphViewModel = function(histogram, functionUrl){
         var chartScheme = window["graphSceme"]["chartResources"]["histogram"]["charts"];
         var charts = self.chartsData[self.selectedAgent()];
         var tmpChart = [];
-        var startIndex = self.chartIndexes[k].sliderStartIndex;
-        var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+        //var startIndex = self.chartIndexes[k].sliderStartIndex;
+        //var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+        var startIndex = 0;
+        var lastIndex = self.dataLength();
         $.each(charts[k], function(ind, line){
             tmpChart.push({"key":line["key"],"color":line["color"], "values": line["values"].slice(startIndex, lastIndex)});
         });
         var currElement = $(event.target)[0];
         plotGraph(tmpChart, $($(currElement).parents(".histogramsGraphs")[0]).find("svg")[k], chartScheme[k]["xLegend"], chartScheme[k]["yLegend"]);
-
-        var $graphs = $("svg");
-        $graphs.on('dblclick',exportGraph);
     }
 
 }
@@ -923,7 +933,7 @@ var timerGraphViewModel = function(timer, functionUrl) {
         return map;
     }
     self.chartIndexes = self.createIndexesMap();
-    
+
     self.hide = function() {
         $(this).hide();
     }
@@ -953,13 +963,15 @@ var timerGraphViewModel = function(timer, functionUrl) {
         var tmpCharts = [];
         $.each(charts, function(index, chart){
             var tmpChart = [];
-            var startIndex = self.chartIndexes[index].sliderStartIndex;
-            var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+            //var startIndex = self.chartIndexes[index].sliderStartIndex;
+            //var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+            var startIndex = 0;
+            var lastIndex = self.dataLength();
             $.each(chart, function(ind, line){
                 tmpChart.push({"key":line["key"],"color":line["color"], "values": line["values"].slice(startIndex, lastIndex)});
             });
             tmpCharts.push(tmpChart);
-        }); 
+        });
         $.each(tmpCharts, function(index, tmpChart){
             plotGraph(tmpChart, $($(currElement).parents(".timerGraphs")[0]).find("svg")[index], chartScheme[index]["xLegend"], chartScheme[index]["yLegend"]);
         });
@@ -991,8 +1003,10 @@ var timerGraphViewModel = function(timer, functionUrl) {
         var chartScheme = window["graphSceme"]["chartResources"]["timer"]["charts"];
         var charts = self.chartsData[self.selectedAgent()];
         var tmpChart = [];
-        var startIndex = self.chartIndexes[k].sliderStartIndex;
-        var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+        //var startIndex = self.chartIndexes[k].sliderStartIndex;
+        // var lastIndex = startIndex + 100> self.dataLength()?self.dataLength():startIndex + 100;
+        var startIndex = 0;
+        var lastIndex = self.dataLength();
         $.each(charts[k], function(ind, line){
             tmpChart.push({"key":line["key"],"color":line["color"], "values": line["values"].slice(startIndex, lastIndex)});
         });
@@ -1036,7 +1050,7 @@ var countersGraphViewModel = function(counters, functionUrl){
                     var ctrData = [];
                     for(var i=0;i<dataLines.length;i++){
                         if (dataLines[i]=="") continue;
-                        var lineJson = $.parseJSON(dataLines[i]);   
+                        var lineJson = $.parseJSON(dataLines[i]);
                         ctrData.push({x: new Date(lineJson["time"]), y: lineJson["count"]});
                     }
                     self.countersData[self.selectedAgent()][ctrUrl["name"]] = ctrData;
@@ -1045,7 +1059,7 @@ var countersGraphViewModel = function(counters, functionUrl){
                 },
                 complete: function() {
                 }
-            });   
+            });
             pushTimeStamps = false;
         });
         return self.countersData;
@@ -1053,7 +1067,7 @@ var countersGraphViewModel = function(counters, functionUrl){
     self.onAgentChange = function(data, event){
         if(self.countersData[self.selectedAgent()]==undefined){
             self.fetchAndParse();
-        } 
+        }
         self.plot($(event.target)[0]);
     }
     self.refresh = function(data, event){
@@ -1070,15 +1084,15 @@ var countersGraphViewModel = function(counters, functionUrl){
         var col1=0, col2=0;
         $.each(data, function(key, val){
             if(key=="error" || key=="skip" || key=="failure" || key=="count"){
-                chart1.push({"key":key,"color":colors[col1],"values":val.slice(self.chartIndexes[0]["sliderStartIndex"], 
+                chart1.push({"key":key,"color":colors[col1],"values":val.slice(self.chartIndexes[0]["sliderStartIndex"],
                     self.chartIndexes[0]["sliderStartIndex"]+100>self.dataLength()?self.dataLength():self.chartIndexes[0]["sliderStartIndex"]+100)});
                 col1=col1+1;
-                col1=col1%colors.length;  
+                col1=col1%colors.length;
             } else {
-                chart2.push({"key":key,"color":colors[col2],"values":val.slice(self.chartIndexes[1]["sliderStartIndex"], 
+                chart2.push({"key":key,"color":colors[col2],"values":val.slice(self.chartIndexes[1]["sliderStartIndex"],
                     self.chartIndexes[1]["sliderStartIndex"]+100>self.dataLength()?self.dataLength():self.chartIndexes[1]["sliderStartIndex"]+100)});
                 col2=col2+1;
-                col2=col2%colors.length;  
+                col2=col2%colors.length;
             }
         });
         if(chartIndex==1){
@@ -1137,14 +1151,14 @@ function divideInCharts(data, chartScheme) {
             var ke = k["key"];
             var tmp = data[ke];
             if(tmp!=undefined){
-                var tmpJson = { 
+                var tmpJson = {
                     "values": tmp,
                     "key": k["name"],
                     "color": k["color"]
                 }
                 linesToPlot.push(tmpJson);
             }
-         });
+        });
         timeSeriesData.push(linesToPlot);
     });
     return timeSeriesData;
@@ -1265,15 +1279,17 @@ var resourceGraphsViewModel = function(resource, url){
             },
             complete: function() {
             }
-        });    
+        });
     }
     self.refresh = function(data, event){
         self.fetchAndParse();
         self.plotAll($(event.target));
     };
     self.plot = function(k, currElement){
-        var startIndex = self.chartIndexes[k]["sliderStartIndex"];
-        var lastIndex = startIndex + 100>self.dataLength()?self.dataLength():startIndex + 100;
+        //var startIndex = self.chartIndexes[k]["sliderStartIndex"];
+        //var lastIndex = startIndex + 100>self.dataLength()?self.dataLength():startIndex + 100;
+        var startIndex = 0;
+        var lastIndex = self.dataLength();
         var tmpChart = [];
         $.each(self.resourcePlotScheme["charts"][k]["keysToPlot"], function(index, keyToPlot){
             if(!keyToPlot["isRegex"]){
@@ -1287,7 +1303,7 @@ var resourceGraphsViewModel = function(resource, url){
                 });
             }
         });
-        plotGraph(tmpChart, $($(currElement).parents(".resourceGraphs")[0]).find("svg")[k], 
+        plotGraph(tmpChart, $($(currElement).parents(".resourceGraphs")[0]).find("svg")[k],
             self.resourcePlotScheme["charts"][k]["xLegend"], self.resourcePlotScheme["charts"][k]["yLegend"],".2s");
         var $graphs = $("svg");
         $graphs.on('dblclick',exportGraph);
@@ -1325,26 +1341,32 @@ var resourceGraphsViewModel = function(resource, url){
     }
 }
 
-function exportGraph(event) {
-    if (this) {
-        saveSvgAsPng(this, "diagram.png");
-    }
-}
-
 function plotGraph(data, svgElement, xAxisLabel, yAxisLabel, tickFormat){
     if(tickFormat==undefined) tickFormat=",.2f";
     var chart;
     formatTime = d3.time.format("%H:%M"),
         formatMinutes = function(d) { return formatTime(new Date(d)); };
     nv.addGraph(function() {
-        chart = nv.models.lineChart().
+        chart = nv.models.lineWithFocusChart().
             margin({left: 80});
 
         chart.xAxis
             .axisLabel(xAxisLabel)
-            .tickFormat(function(d) { return d3.time.format('%H:%M')(new Date(d)); });
+            .tickFormat(function(d) {
+                return d3.time.format(formatMinutes(d));
+            });
+
+        chart.x2Axis
+            .axisLabel(xAxisLabel)
+            .tickFormat(function(d) {
+                return d3.time.format(formatMinutes(d));
+            });
 
         chart.yAxis
+            .axisLabel(yAxisLabel)
+            .tickFormat(d3.format(tickFormat));
+
+        chart.y2Axis
             .axisLabel(yAxisLabel)
             .tickFormat(d3.format(tickFormat));
 
@@ -1355,7 +1377,7 @@ function plotGraph(data, svgElement, xAxisLabel, yAxisLabel, tickFormat){
             .call(chart);
 
         nv.utils.windowResize(chart.update);
-        chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+        //chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
         return chart;
     });
 }
@@ -1416,7 +1438,7 @@ function updateStateOnUnCheck(){
     $.each(selectedTimerNodes, function(index, node){
         selTimerList.push($(node).attr('id'));
     });
-    
+
     var selMonResList = [];
     $.each(selectedMonNodes, function(index, node){
         selMonResList.push($(node).attr('id'));
