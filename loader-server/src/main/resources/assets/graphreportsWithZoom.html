@@ -8,7 +8,7 @@
 	<script type="text/javascript" src="js/bootstrap-dropdown.js"></script>
 	<script type="text/javascript" src="js/knockout-2.3.0-min.js"></script>
     <script type="text/javascript" src="js/lib/saveSvgAsPng.js"></script>
-	<script type="text/javascript" src="js/createJobReports.js"></script>
+    <script type="text/javascript" src="js/createJobReportsWithZoom.js"></script>
 	<script src="js/lib/d3.v2.js"></script>
 	<script src="js/nv.d3.js"></script>
 	<script src="js/src/tooltip.js"></script>
@@ -76,12 +76,12 @@
 	      	}
 	      });
 	      $("#interval").change(function(){
-	      	console.log("inside interval change")
+              console.log("inside interval change");
 	      	var url = window.location.href;
 	      	url = url.replace(/interval=\d+/, "interval=" + $("#interval").val());
 	      	history.replaceState(null, null, url);
 	        location.reload();
-	      })
+          });
 	      var autoRefresh = getQueryParams("autoRefresh");
 	      if(autoRefresh=="true"){
 	      	var interval = getQueryParams("interval");
@@ -103,7 +103,7 @@
 		<ul class="breadcrumb">
   			<li><a href="index.htm">Home</a> <span class="divider">/</span></li>
   			<li><a href="jobsearch.html">Job Search</a> <span class="divider">/</span></li>
-            <span class="pull-right"> Double click on a graph to download it.</span>
+           <span class="pull-right"> Double click on a graph to download it.</span>
 		</ul>
 		</div>
 		<div class="span2 pull-right">

@@ -40,11 +40,9 @@ public class LibCache {
         return platformZipPath;
     }
 
-    public static LibCache initialize(ResourceStorageFSConfig storageConfig) throws IOException {
+    synchronized public static LibCache initialize(ResourceStorageFSConfig storageConfig) throws IOException {
         if(self == null) {
-        	synchronized(self) {
-        		self = new LibCache(storageConfig);
-        	}
+        	self = new LibCache(storageConfig);
         }
         return self;
     }
