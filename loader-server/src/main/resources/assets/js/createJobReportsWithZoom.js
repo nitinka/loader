@@ -9,7 +9,7 @@ ko.bindingHandlers.graphsInitialization = {
             viewModel.initializeGraphs($(element));
         }
     }
-}
+};
 
 ko.bindingHandlers.addSlider = {
     update: function(element, valueAccessor, allBindings, viewModel, bindingContext){
@@ -19,7 +19,7 @@ ko.bindingHandlers.addSlider = {
             //bindingContext.$parent.addSlider(element);
         }
     }
-}
+};
 
 ko.bindingHandlers.addCounterSlider = {
     update: function(element, valueAccessor, allBindings, viewModel, bindingContext){
@@ -29,7 +29,7 @@ ko.bindingHandlers.addCounterSlider = {
             //bindingContext.$data.addSlider(element);
         }
     }
-}
+};
 
 function getQueryParams(sParam) {
     var queryString = window.location.search.substring(2);
@@ -312,7 +312,7 @@ function createGroupsTree(jobStats) {
 
 function getGraphsChildren(jobStats) {
     if (jobStats == undefined || jobStats.length == 0) return undefined;
-    var children = []
+    var children = [];
     $.each(jobStats, function(index, group) {
         children.push({
             "attr": {
@@ -576,7 +576,7 @@ function getResourcesChildren(monStats, monRes, agentIndex) {
             },
             "data": resource
         });
-    })
+    });
     return children;
 }
 
@@ -599,7 +599,7 @@ var groupsGraphViewModel = function(jobStats) {
             groups.push(new groupGraphViewModel(group));
         });
         return groups;
-    }
+    };
     self.groups = ko.observableArray(self.getGroups());
     self.isVisible = ko.observable(false);
     self.showGraphs = function(){
@@ -608,7 +608,7 @@ var groupsGraphViewModel = function(jobStats) {
         $.each(grps, function(index , grp){
             grp.showGroupGraphs();
         });
-    }
+    };
     self.hideGraphs = function(){
         self.isVisible(false);
         var grps = self.groups();
@@ -616,7 +616,7 @@ var groupsGraphViewModel = function(jobStats) {
             grp.hideGroupGraphs();
         });
     }
-}
+};
 
 var groupGraphViewModel = function(group) {
     var self = this;
@@ -631,7 +631,7 @@ var groupGraphViewModel = function(group) {
             }
         });
         return functions;
-    }
+    };
     self.groupName = ko.observable(group["groupName"]);
     self.functions = ko.observableArray(self.getFunctions());
     self.isVisible = ko.observable(false);
@@ -641,7 +641,7 @@ var groupGraphViewModel = function(group) {
         $.each(funcs, function(index, func){
             func.showFuncGraphs();
         });
-    }
+    };
     self.hideGroupGraphs = function(){
         self.isVisible(false);
         var funcs = self.functions();
@@ -649,7 +649,7 @@ var groupGraphViewModel = function(group) {
             func.hideFuncGraphs();
         });
     }
-}
+};
 
 var functionGraphViewModel = function(func, groupUrl) {
     var self = this;
@@ -666,7 +666,7 @@ var functionGraphViewModel = function(func, groupUrl) {
             }
         });
         return timers;
-    }
+    };
 
     self.getHistograms = function(){
         var histos = [];
@@ -679,7 +679,7 @@ var functionGraphViewModel = function(func, groupUrl) {
             }
         });
         return histos;
-    }
+    };
     self.timers = ko.observableArray(self.getTimers());
     try {
         self.counters = ko.observableArray([new countersGraphViewModel(func["metrics"]["counters"], functionUrl)]);
@@ -696,45 +696,45 @@ var functionGraphViewModel = function(func, groupUrl) {
         self.showFuncTimersGraphs();
         self.showFuncCounterGraphs();
         self.showFuncHistogramGraphs();
-    }
+    };
     self.hideFuncGraphs = function(){
         self.isVisible(false);
         self.hideFuncTimersGraphs();
         self.hideFuncCounterGraphs();
         self.hideFuncHistogramGraphs();
-    }
+    };
     self.showFuncTimersGraphs = function(){
         self.timersVisible(true);
         var tmrs =  self.timers();
         $.each(tmrs, function(index, tm){
             tm.showTimerGraphs();
         });
-    }
+    };
     self.hideFuncTimersGraphs = function(){
         self.timersVisible(false);
         var tmrs =  self.timers();
         $.each(tmrs, function(index, tm){
             tm.hideTimerGraphs();
         });
-    }
+    };
     self.showFuncCounterGraphs = function(){
         self.countersVisible(true);
         var counters = self.counters();
         counters[0].showCounterGraphs();
 
-    }
+    };
     self.hideFuncCounterGraphs = function(){
         self.countersVisible(false);
         var counters = self.counters();
         counters[0].hideCounterGraphs();
-    }
+    };
     self.showFuncHistogramGraphs = function(){
         self.histogramsVisible(true);
         var histos = self.histograms();
         $.each(histos, function(index, h){
             h.showHistogramGraphs();
         });
-    }
+    };
     self.hideFuncHistogramGraphs = function(){
         self.histogramsVisible(false);
         var histos = self.histograms();
@@ -742,7 +742,7 @@ var functionGraphViewModel = function(func, groupUrl) {
             h.hideHistogramGraphs();
         });
     }
-}
+};
 var histogramGraphViewModel = function(histogram, functionUrl){
     var self = this;
     self.histogramName = "Histogram-" + histogram["name"];
@@ -777,7 +777,7 @@ var histogramGraphViewModel = function(histogram, functionUrl){
                     var lineJson = $.parseJSON(dataLines[i]);
                     $.each(lineJson, function(key, value) {
                         if(key != "time"){
-                            if (timeSeries[key] == undefined) timeSeries[key] = new Array();
+                            if (timeSeries[key] == undefined) timeSeries[key] = [];
                             timeSeries[key].push({x: new Date(lineJson["time"]), y: value});
                         }
                     });
@@ -789,24 +789,24 @@ var histogramGraphViewModel = function(histogram, functionUrl){
             }
         });
         return timeSeries;
-    }
+    };
     self.createIndexesMap = function(){
         var map = [];
         for(var i=0;i<chartScheme.length;i++) map.push({"sliderStartIndex": 0});
         return map;
-    }
+    };
     self.chartIndexes = self.createIndexesMap();
 
     self.hide = function() {
         $(this).hide();
-    }
+    };
     self.onAgentChange = function(data, event) {
         var agent = self.selectedAgent();
         if (self.chartsData[agent] == undefined) {
             self.chartsData[agent] = divideInCharts(self.fetchAndParse(),window["graphSceme"]["chartResources"]["histogram"]["charts"]);
         }
         self.plot($(event.target));
-    }
+    };
     self.refresh = function(data, event) {
         var agent = self.selectedAgent();
         $.each(self.chartsData, function(k,v){
@@ -814,12 +814,12 @@ var histogramGraphViewModel = function(histogram, functionUrl){
         });
         self.chartsData[agent] = divideInCharts(self.fetchAndParse(),window["graphSceme"]["chartResources"]["histogram"]["charts"]);
         self.plot($(event.target)[0]);
-    }
+    };
     self.initializeGraphs = function(currElement){
         var agent = self.selectedAgent();
         self.chartsData[agent] = divideInCharts(self.fetchAndParse(),window["graphSceme"]["chartResources"]["histogram"]["charts"]);
         self.plot(currElement);
-    }
+    };
     self.plot = function(currElement){
         var chartScheme = window["graphSceme"]["chartResources"]["histogram"]["charts"];
         var charts = self.chartsData[self.selectedAgent()];
@@ -840,13 +840,13 @@ var histogramGraphViewModel = function(histogram, functionUrl){
         });
         var $graphs = $("svg");
         $graphs.on('dblclick',exportGraph);
-    }
+    };
     self.showHistogramGraphs = function(){
         self.isVisible(true);
-    }
+    };
     self.hideHistogramGraphs = function(){
         self.isVisible(false);
-    }
+    };
     self.addSlider = function(element){
         var st = Math.ceil(self.dataLength()/100);
         var options={
@@ -858,9 +858,9 @@ var histogramGraphViewModel = function(histogram, functionUrl){
                 self.chartIndexes[k].sliderStartIndex=ui.value;
                 self.updatePlot(k, event);
             }
-        }
+        };
         $(element).slider(options);
-    }
+    };
 
     self.updatePlot = function(k, event){
         var chartScheme = window["graphSceme"]["chartResources"]["histogram"]["charts"];
@@ -877,7 +877,7 @@ var histogramGraphViewModel = function(histogram, functionUrl){
         plotGraph(tmpChart, $($(currElement).parents(".histogramsGraphs")[0]).find("svg")[k], chartScheme[k]["xLegend"], chartScheme[k]["yLegend"]);
     }
 
-}
+};
 var timerGraphViewModel = function(timer, functionUrl) {
     var self = this;
     self.timerName = "Timer-" + timer["name"];
@@ -913,7 +913,7 @@ var timerGraphViewModel = function(timer, functionUrl) {
                     var lineJson = $.parseJSON(dataLines[i]);
                     $.each(lineJson, function(key, value) {
                         if(key != "time"){
-                            if (timeSeries[key] == undefined) timeSeries[key] = new Array();
+                            if (timeSeries[key] == undefined) timeSeries[key] = [];
                             timeSeries[key].push({x: new Date(lineJson["time"]), y: value});
                         }
                     });
@@ -925,25 +925,25 @@ var timerGraphViewModel = function(timer, functionUrl) {
             }
         });
         return timeSeries;
-    }
+    };
 
     self.createIndexesMap = function(){
         var map = [];
         for(var i=0;i<chartScheme.length;i++) map.push({"sliderStartIndex": 0});
         return map;
-    }
+    };
     self.chartIndexes = self.createIndexesMap();
 
     self.hide = function() {
         $(this).hide();
-    }
+    };
     self.onAgentChange = function(data, event) {
         var agent = self.selectedAgent();
         if (self.chartsData[agent] == undefined) {
             self.chartsData[agent] = divideInCharts(self.fetchAndParse(),window["graphSceme"]["chartResources"]["timer"]["charts"]);
         }
         self.plot($(event.target));
-    }
+    };
     self.refresh = function(data, event) {
         var agent = self.selectedAgent();
         $.each(self.chartsData, function(k,v){
@@ -951,12 +951,12 @@ var timerGraphViewModel = function(timer, functionUrl) {
         });
         self.chartsData[agent] = divideInCharts(self.fetchAndParse(),window["graphSceme"]["chartResources"]["timer"]["charts"]);
         self.plot($(event.target)[0]);
-    }
+    };
     self.initializeGraphs = function(currElement){
         var agent = self.selectedAgent();
         self.chartsData[agent] = divideInCharts(self.fetchAndParse(),window["graphSceme"]["chartResources"]["timer"]["charts"]);
         self.plot(currElement);
-    }
+    };
     self.plot = function(currElement){
         var chartScheme = window["graphSceme"]["chartResources"]["timer"]["charts"];
         var charts = self.chartsData[self.selectedAgent()];
@@ -977,13 +977,13 @@ var timerGraphViewModel = function(timer, functionUrl) {
         });
         var $graphs = $("svg");
         $graphs.on('dblclick',exportGraph);
-    }
+    };
     self.showTimerGraphs = function(){
         self.isVisible(true);
-    }
+    };
     self.hideTimerGraphs = function(){
         self.isVisible(false);
-    }
+    };
     self.addSlider = function(element){
         var st = Math.ceil(self.dataLength()/100);
         var options={
@@ -995,9 +995,9 @@ var timerGraphViewModel = function(timer, functionUrl) {
                 self.chartIndexes[k].sliderStartIndex=ui.value;
                 self.updatePlot(k, event);
             }
-        }
+        };
         $(element).slider(options);
-    }
+    };
 
     self.updatePlot = function(k, event){
         var chartScheme = window["graphSceme"]["chartResources"]["timer"]["charts"];
@@ -1013,7 +1013,7 @@ var timerGraphViewModel = function(timer, functionUrl) {
         var currElement = $(event.target)[0];
         plotGraph(tmpChart, $($(currElement).parents(".timerGraphs")[0]).find("svg")[k], chartScheme[k]["xLegend"], chartScheme[k]["yLegend"]);
     }
-}
+};
 
 var countersGraphViewModel = function(counters, functionUrl){
     var self = this;
@@ -1035,7 +1035,7 @@ var countersGraphViewModel = function(counters, functionUrl){
         if (self.dataLength()>100) return true;
         else return false;
     });
-    self.chartIndexes = [{"sliderStartIndex":0},{"sliderStartIndex":0}]
+    self.chartIndexes = [{"sliderStartIndex": 0}, {"sliderStartIndex": 0}];
     self.fetchAndParse = function(){
         self.countersData[self.selectedAgent()] = {};
         $.each(self.counterUrls(), function(index, ctrUrl){
@@ -1063,18 +1063,18 @@ var countersGraphViewModel = function(counters, functionUrl){
             pushTimeStamps = false;
         });
         return self.countersData;
-    }
+    };
     self.onAgentChange = function(data, event){
         if(self.countersData[self.selectedAgent()]==undefined){
             self.fetchAndParse();
         }
         self.plot($(event.target)[0]);
-    }
+    };
     self.refresh = function(data, event){
         self.countersData={};
         self.fetchAndParse();
         self.plot($(event.target)[0]);
-    }
+    };
     self.plot = function(currElement, chartIndex){
         var agent = self.selectedAgent();
         var data = self.countersData[agent];
@@ -1110,10 +1110,10 @@ var countersGraphViewModel = function(counters, functionUrl){
         }
         var $graphs = $("svg");
         $graphs.on('dblclick',exportGraph);
-    }
+    };
     self.updatePlot = function(k, event){
         self.plot($(event.target, k));
-    }
+    };
     self.addSlider = function(element){
         var st = Math.ceil(self.dataLength()/100);
         var options={
@@ -1125,22 +1125,22 @@ var countersGraphViewModel = function(counters, functionUrl){
                 self.chartIndexes[k].sliderStartIndex=ui.value;
                 self.updatePlot(k, event);
             }
-        }
+        };
         $(element).slider(options);
-    }
+    };
     self.showCounterGraphs = function(){
         self.isVisible(true);
-    }
+    };
     self.hideCounterGraphs = function(){
         self.isVisible(false);
-    }
+    };
     self.initializeGraphs = function(currElement){
         if(self.countersData[self.selectedAgent()]==undefined){
             self.fetchAndParse();
         }
         self.plot(currElement);
     }
-}
+};
 
 function divideInCharts(data, chartScheme) {
     var timeSeriesData = [];
@@ -1155,7 +1155,7 @@ function divideInCharts(data, chartScheme) {
                     "values": tmp,
                     "key": k["name"],
                     "color": k["color"]
-                }
+                };
                 linesToPlot.push(tmpJson);
             }
         });
@@ -1166,7 +1166,7 @@ function divideInCharts(data, chartScheme) {
 
 var monitorGraphsViewModel = function(monStats) {
     var self = this;
-    self.monStatsUrl = "/loader-server/jobs/" + getQueryParams("jobId") + "/monitoringStats"
+    self.monStatsUrl = "/loader-server/jobs/" + getQueryParams("jobId") + "/monitoringStats";
     self.isVisible = ko.observable(false);
     self.getMonAgents = function(){
         var agents = [];
@@ -1174,21 +1174,21 @@ var monitorGraphsViewModel = function(monStats) {
             agents.push(new monAgentGraphsViewModel(agent, self.monStatsUrl));
         });
         return agents;
-    }
+    };
     self.monAgents  = ko.observableArray(self.getMonAgents());
     self.showMonitorGraphs = function(){
         self.isVisible(true);
         $.each(self.monAgents(), function(index, monAgent){
             monAgent.showAgentGraphs();
         });
-    }
+    };
     self.hideMonitorGraphs = function(){
         self.isVisible(false);
         $.each(self.monAgents(), function(index, monAgent){
             monAgent.hideAgentGraphs();
         });
     }
-}
+};
 
 var monAgentGraphsViewModel = function(agent, url){
     var self = this;
@@ -1200,7 +1200,7 @@ var monAgentGraphsViewModel = function(agent, url){
             res.push(new resourceGraphsViewModel(r, self.agentMonStatsUrl));
         });
         return res;
-    }
+    };
     self.resources = ko.observableArray(self.getResources());
     self.isVisible = ko.observable(false);
     self.showAgentGraphs = function(){
@@ -1208,14 +1208,14 @@ var monAgentGraphsViewModel = function(agent, url){
         $.each(self.resources(), function(index, res){
             res.showResourceGraphs();
         });
-    }
+    };
     self.hideAgentGraphs = function(){
         self.isVisible(false);
         $.each(self.resources(), function(index, res){
             res.hideResourceGraphs();
         });
     }
-}
+};
 
 var resourceGraphsViewModel = function(resource, url){
     var self = this;
@@ -1238,7 +1238,7 @@ var resourceGraphsViewModel = function(resource, url){
             map.push({"sliderStartIndex":0});
         }
         return map;
-    }
+    };
     self.chartIndexes = self.createIndexesMap();
     self.fetchAndParse = function(){
         $.ajax({
@@ -1280,7 +1280,7 @@ var resourceGraphsViewModel = function(resource, url){
             complete: function() {
             }
         });
-    }
+    };
     self.refresh = function(data, event){
         self.fetchAndParse();
         self.plotAll($(event.target));
@@ -1313,10 +1313,10 @@ var resourceGraphsViewModel = function(resource, url){
         for(var k=0;k<self.totalSvgs();k++){
             self.plot(k, currElement);
         }
-    }
+    };
     self.initializeGraphs = function(currElement){
         self.plotAll(currElement);
-    }
+    };
     self.addSlider = function(element){
         var st = Math.ceil(self.dataLength()/100);
         var options={
@@ -1328,18 +1328,18 @@ var resourceGraphsViewModel = function(resource, url){
                 self.chartIndexes[k].sliderStartIndex=ui.value;
                 self.plot(k, $(event.target));
             }
-        }
+        };
         $(element).slider(options);
-    }
+    };
 
     self.showResourceGraphs = function(){
         self.isVisible(true);
-    }
+    };
 
     self.hideResourceGraphs = function(){
         self.isVisible(false);
     }
-}
+};
 
 function plotGraph(data, svgElement, xAxisLabel, yAxisLabel, tickFormat){
     if(tickFormat==undefined) tickFormat=",.2f";
@@ -1427,7 +1427,7 @@ function updateStateOnCheck(){
     var interval = getQueryParams("interval");
     if(autoRefresh==undefined) autoRefresh = "false";
     if(interval==undefined) interval = "60000";
-    var link = window.location.origin+ "/graphreports.html" + "?&jobId=" + getQueryParams("jobId")+ "&autoRefresh="+ autoRefresh + "&interval=" + interval + "&monNodes=" + selMonResList.join() + "&timerNodes=" + selTimerList.join() ;
+    var link = window.location.origin + "/graphreportsWithZoom.html" + "?&jobId=" + getQueryParams("jobId") + "&autoRefresh=" + autoRefresh + "&interval=" + interval + "&monNodes=" + selMonResList.join() + "&timerNodes=" + selTimerList.join();
     history.replaceState(null, null, link);
 }
 
@@ -1447,7 +1447,7 @@ function updateStateOnUnCheck(){
     var interval = getQueryParams("interval");
     if(autoRefresh==undefined) autoRefresh = "false";
     if(interval==undefined) interval = "60000";
-    var link = window.location.origin+ "/graphreports.html" + "?&jobId=" + getQueryParams("jobId")+ "&autoRefresh="+ autoRefresh + "&interval=" + interval  + "&monNodes=" + selMonResList.join() + "&timerNodes=" + selTimerList.join();
+    var link = window.location.origin + "/graphreportsWithZoom.html" + "?&jobId=" + getQueryParams("jobId") + "&autoRefresh=" + autoRefresh + "&interval=" + interval + "&monNodes=" + selMonResList.join() + "&timerNodes=" + selTimerList.join();
     history.replaceState(null, null, link);
 }
 
